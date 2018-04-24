@@ -11,5 +11,7 @@ namespace ConvenientShop.API.Models
         public string Address { get; set; }
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
+        public ICollection<ProductDto> Products { get; set; } = new List<ProductDto>();
+        public int NumberOfProducts => Products.Count;
     }
 }
