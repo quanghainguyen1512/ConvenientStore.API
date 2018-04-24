@@ -7,9 +7,9 @@ using ConvenientShop.API.Models;
 
 namespace ConvenientShop.API.Services.Interfaces
 {
-    interface ISupplierRepository
+    public interface ISupplierRepository
     {
-        IEnumerable<SupplierDto> GetSuppliers();
+        IEnumerable<Supplier> GetSuppliers();
         Supplier GetSupplier(int supplierId, bool includeProducts);
         bool SupplierExists(int supplierId);
         bool AddSupplier(Supplier supplier);

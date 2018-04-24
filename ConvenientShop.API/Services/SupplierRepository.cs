@@ -48,7 +48,7 @@ namespace ConvenientShop.API.Services
                 conn.Open();
                 var supDictionaty = new Dictionary<int, Supplier>();
 
-                var sql = new StringBuilder("SELECT s.SupplierName, s.Address, s.PhoneNumber, s.Email FROM supplier as s ");
+                var sql = new StringBuilder("SELECT * FROM supplier as s ");
                 if (includeProducts)
                 {
                     sql.Append("INNER JOIN product as p ON p.SupId = s.SupplierId ");
@@ -76,13 +76,13 @@ namespace ConvenientShop.API.Services
             }
         }
 
-        public IEnumerable<SupplierDto> GetSuppliers()
+        public IEnumerable<Supplier> GetSuppliers()
         {
             using(var conn = Connection)
             {
                 conn.Open();
                 var sql = "SELECT SupplierName, Address, PhoneNumber, Email FROM mrwhoami_convenient_store.supplier;";
-                return conn.Query<SupplierDto>(sql);
+                return conn.Query<Supplier>(sql);
             }
         }
 
