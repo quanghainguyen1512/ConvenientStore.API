@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ConvenientShop.API.Controllers
 {
     [Produces("application/json")]
-    [Route("api/staff")]
+    [Route("api/staffs")]
     public class StaffController : Controller
     {
         private IStaffRepository _repo;
