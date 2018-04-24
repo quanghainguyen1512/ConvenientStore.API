@@ -14,7 +14,7 @@ namespace ConvenientShop.API.Entities
         public string LastName { get; set; }
         public string IdentityNumber { get; set; }
         public DateTime DateOfBirth { get; set; }
-        public bool Gender { get; set; }    // 1: male - 0: female
+        public bool Gender { get; set; } // 1: male - 0: female
         public string PhoneNumber { get; set; }
         public int AccountId { get; set; }
     }
