@@ -1,12 +1,12 @@
-﻿using ConvenientShop.API.Models;
-using ConvenientShop.API.Services.Interfaces;
-using Microsoft.Extensions.Options;
-using MySql.Data.MySqlClient;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using ConvenientShop.API.Models;
+using ConvenientShop.API.Services.Interfaces;
+using Microsoft.Extensions.Options;
+using MySql.Data.MySqlClient;
 
 namespace ConvenientShop.API.Services
 {

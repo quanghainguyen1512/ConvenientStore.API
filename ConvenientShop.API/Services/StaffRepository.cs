@@ -15,13 +15,11 @@ namespace ConvenientShop.API.Services
     public class StaffRepository : ConvenientStoreRepository, IStaffRepository
     {
         public StaffRepository(IOptions<StoreConfig> config) : base(config)
-        {
-
-        }
+        { }
         public bool AddStaff(Staff staff)
         {
             var rowsInfected = 0;
-            using (var conn = Connection)
+            using(var conn = Connection)
             {
                 conn.Open();
                 //var sql = "";
@@ -36,7 +34,7 @@ namespace ConvenientShop.API.Services
 
         public IEnumerable<Staff> GetAllStaffs()
         {
-            using (var conn = Connection)
+            using(var conn = Connection)
             {
                 conn.Open();
                 var sql = "SELECT s.FirstName, s.LastName, s.DateOfBirth, s.Gender, s.PhoneNumber, s.IdentityNumber FROM convenient_shop_db.staff as s";
@@ -46,12 +44,12 @@ namespace ConvenientShop.API.Services
 
         public Staff GetStaff(int id)
         {
-            using (var conn = Connection)
+            using(var conn = Connection)
             {
                 conn.Open();
                 var sql = "SELECT s.FirstName, s.LastName, s.DateOfBirth, s.Gender, s.PhoneNumber, s.IdentityNumber FROM convenient_shop_db.staff as s" +
                     "WHERE StaffId = @id";
-                return conn.Query<Staff>(sql, param: new { id }).FirstOrDefault();
+                return conn.Query<Staff>(sql, param : new { id }).FirstOrDefault();
             }
         }
     }
