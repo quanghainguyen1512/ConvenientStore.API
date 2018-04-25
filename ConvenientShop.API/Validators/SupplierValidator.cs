@@ -5,7 +5,7 @@ using FluentValidation;
 
 namespace ConvenientShop.API.Validators
 {
-    public class SupplierValidator : AbstractValidator<Supplier>
+    public class SupplierValidator : AbstractValidator<SupplierWithoutProductsDto>
     {
         public SupplierValidator()
         {
