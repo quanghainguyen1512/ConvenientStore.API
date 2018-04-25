@@ -25,6 +25,7 @@ namespace ConvenientShop.API.Helpers
                     opt => opt.MapFrom(src => src.Supplier.SupplierName))
                 .ForMember(dest => dest.Category,
                     opt => opt.MapFrom(src => src.Category.Name));
+            CreateMap<Entities.Product, Models.ProductWithoutDetailDto>();
 
             //Supplier
             CreateMap<Entities.Supplier, Models.SupplierDto>();

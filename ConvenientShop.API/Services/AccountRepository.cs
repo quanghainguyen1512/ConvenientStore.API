@@ -11,8 +11,7 @@ namespace ConvenientShop.API.Services
 {
     public class AccountRepository : ConvenientStoreRepository, IAccountRepository
     {
-        public AccountRepository(IOptions<StoreConfig> config) : base(config)
-        { }
+        public AccountRepository(IOptions<StoreConfig> config) : base(config) { }
 
         public bool AuthorizeUser(int accId, Permission perm)
         {
