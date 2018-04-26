@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using ConvenientShop.API.Entities;
 using ConvenientShop.API.Models;
 using ConvenientShop.API.Services;
 using ConvenientShop.API.Services.Interfaces;
@@ -29,8 +30,8 @@ namespace ConvenientShop.API.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{id}")]
-        public IActionResult GetSupplier(int id, bool includeProducts = false)
+        [HttpGet("{id}", Name = "GetSupplier")]
+        public IActionResult GetSupplier(int id, bool includeProducts = true)
         {
             var sup = _repo.GetSupplier(id, includeProducts);
             if (sup is null)
@@ -44,6 +45,23 @@ namespace ConvenientShop.API.Controllers
 
             var resultWithoutProduct = Mapper.Map<SupplierWithoutProductsDto>(sup);
             return Ok(resultWithoutProduct);
+        }
+
+        [HttpPost]
+        public IActionResult PostSupplier([FromBody] SupplierWithoutProductsDto supplier)
+        {
+            if (supplier is null)
+                return BadRequest();
+
+            var (isValid, errors) = supplier.Validate();
+
+            if (!isValid)
+                return BadRequest(errors);
+
+            var supToAdd = Mapper.Map<Supplier>(supplier);
+            return _repo.AddSupplier(supToAdd) ?
+                StatusCode(201, "Create Successfully") :
+                StatusCode(500, "A problem happened while handling your request.");
         }
     }
 }
