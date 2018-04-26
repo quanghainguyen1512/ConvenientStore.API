@@ -30,7 +30,7 @@ namespace ConvenientShop.API.Services
         {
             using(var conn = Connection)
             {
-                var sql = "INSERT INTO `convenient_shop_db`.`account` (`Username`, `Password`, `RoleId`) " +
+                var sql = "INSERT INTO `account` (`Username`, `Password`, `RoleId`) " +
                     "VALUES (@username, @password, @roleId)";
                 conn.Execute(sql, param : new { username, password, roleId });
             }
@@ -40,7 +40,7 @@ namespace ConvenientShop.API.Services
         {
             using(var conn = Connection)
             {
-                var sql = "SELECT Username FROM convenient_shop_db.account WHERE Username like @username";
+                var sql = "SELECT Username FROM account WHERE Username like @username";
                 var result = conn.ExecuteScalar(sql, param : new { username });
                 return result != null;
             }
@@ -50,9 +50,9 @@ namespace ConvenientShop.API.Services
         {
             using(var conn = Connection)
             {
-                var sql = "SELECT AccountId FROM convenient_shop_db.account WHERE Username like @username && Password like @password";
+                var sql = "SELECT AccountId, Username FROM account WHERE Username like @username && Password like @password";
                 var accountId = conn.QueryFirstOrDefault<AccountDto>(sql, param : new { username, password });
-                return ((accountId is null), accountId as AccountDto);
+                return (!(accountId is null), accountId as AccountDto);
             }
         }
     }

@@ -28,7 +28,7 @@ namespace ConvenientShop.API.Services
             using(var conn = Connection)
             {
                 conn.Open();
-                var sql = "INSERT INTO` mrwhoami_convenient_store`.`supplier`(`SupplierName`, `Address`, `PhoneNumber`, `Email`)" +
+                var sql = "INSERT INTO `mrwhoami_convenient_store`.`supplier`(`SupplierName`, `Address`, `PhoneNumber`, `Email`)" +
                     $" VALUES('{supplier.SupplierName}', '{supplier.Address}', '{supplier.PhoneNumber}', '{supplier.Email}')";
                 var res = conn.Execute(sql);
                 return res > 0;
