@@ -42,6 +42,12 @@ namespace ConvenientShop.API.Helpers
                     opt => opt.MapFrom(src => src.Gender == true ? "Male" : "Female"))
                 .ForMember(dest => dest.CustomerType,
                     opt => opt.MapFrom(src => src.CustomerType.Name));
+            CreateMap<Entities.Customer, Models.CustomerForTypeDto>()
+                .ForMember(dest => dest.FullName,
+                    opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"))
+                .ForMember(dest => dest.Age,
+                    opt => opt.MapFrom(src => Helpers.DateOfBirthToAge(src.DateOfBirth)));
+            CreateMap<Models.CustomerForOperationsDto, Entities.Customer>();
         }
     }
 }
