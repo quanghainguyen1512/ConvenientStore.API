@@ -29,7 +29,7 @@ namespace ConvenientShop.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetProduct(int id, bool includeDetail = true)
+        public IActionResult GetProduct(int id, bool includeDetail = false)
         {
             var product = _repo.GetProduct(id, includeDetail);
             if (product is null)

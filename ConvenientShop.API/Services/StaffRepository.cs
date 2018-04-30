@@ -36,7 +36,7 @@ namespace ConvenientShop.API.Services
             using(var conn = Connection)
             {
                 conn.Open();
-                var sql = "SELECT s.FirstName, s.LastName, s.DateOfBirth, s.Gender, s.PhoneNumber, s.IdentityNumber FROM mrwhoami_convenient_store.staff as s";
+                var sql = "SELECT s.FirstName, s.LastName, s.DateOfBirth, s.Gender FROM mrwhoami_convenient_store.staff as s";
                 return conn.Query<Staff>(sql);
             }
         }
@@ -46,7 +46,7 @@ namespace ConvenientShop.API.Services
             using(var conn = Connection)
             {
                 conn.Open();
-                var sql = "SELECT s.FirstName, s.LastName, s.DateOfBirth, s.Gender, s.PhoneNumber, s.IdentityNumber FROM mrwhoami_convenient_store.staff as s" +
+                var sql = "SELECT s.FirstName, s.LastName, s.DateOfBirth, s.Gender, s.PhoneNumber, s.IdentityNumber FROM mrwhoami_convenient_store.staff as s " +
                     "WHERE StaffId = @id";
                 return conn.Query<Staff>(sql, param : new { id }).FirstOrDefault();
             }
