@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Dapper.Contrib.Extensions;
 
 namespace ConvenientShop.API.Entities
 {
+    [Table("supplier")]
     public class Supplier
     {
+        [Key]
         public int SupplierId { get; set; }
         public string SupplierName { get; set; }
         public string Address { get; set; }

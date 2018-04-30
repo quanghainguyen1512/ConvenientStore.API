@@ -4,6 +4,7 @@ using System.Text;
 using ConvenientShop.API.Entities;
 using ConvenientShop.API.Models;
 using Dapper;
+using Dapper.Contrib.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ConvenientShop.API.Services
@@ -48,8 +49,9 @@ namespace ConvenientShop.API.Services
             using(var conn = Connection)
             {
                 conn.Open();
-                var sql = "SELECT * FROM customer";
-                return conn.Query<Customer>(sql);
+                // var sql = "SELECT * FROM customer";
+                // return conn.Query<Customer>(sql);
+                return conn.GetAll<Customer>();
             }
         }
 

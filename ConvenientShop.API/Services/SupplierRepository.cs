@@ -4,6 +4,8 @@ using System.Text;
 using ConvenientShop.API.Entities;
 using ConvenientShop.API.Models;
 using Dapper;
+using Dapper.Contrib.Extensions;
+using Dapper.Mapper;
 using Microsoft.Extensions.Options;
 
 namespace ConvenientShop.API.Services
@@ -72,7 +74,7 @@ namespace ConvenientShop.API.Services
                         splitOn: "SupId",
                         param : new { supplierId }
                     ).FirstOrDefault() :
-                    conn.Query<Supplier>(sql.ToString(), param : new { supplierId }).FirstOrDefault();
+                    conn.Get<Supplier>(supplierId);
             }
         }
 
@@ -81,8 +83,9 @@ namespace ConvenientShop.API.Services
             using(var conn = Connection)
             {
                 conn.Open();
-                var sql = "SELECT SupplierName, Address, PhoneNumber, Email FROM mrwhoami_convenient_store.supplier;";
-                return conn.Query<Supplier>(sql);
+                // var sql = "SELECT SupplierName, Address, PhoneNumber, Email FROM mrwhoami_convenient_store.supplier;";
+                // return conn.Query<Supplier>(sql);
+                return conn.GetAll<Supplier>();
             }
         }
 
