@@ -37,6 +37,7 @@ namespace ConvenientShop.API.Services
                         c.CustomerType = ct;
                         return c;
                     },
+                    splitOn: "Id",
                     param : new { customerId, typeId }
                 ).FirstOrDefault();
             }
