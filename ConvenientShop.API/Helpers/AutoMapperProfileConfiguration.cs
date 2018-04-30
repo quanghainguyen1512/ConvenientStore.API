@@ -12,7 +12,14 @@ namespace ConvenientShop.API.Helpers
         {
             // Staff
             CreateMap<Entities.Staff, Models.StaffDto>()
-                .ForMember(dest => dest.StaffName,
+                .ForMember(dest => dest.FullName,
+                    opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"))
+                .ForMember(dest => dest.Age,
+                    opt => opt.MapFrom(src => Helpers.DateOfBirthToAge(src.DateOfBirth)))
+                .ForMember(dept => dept.Gender,
+                    opt => opt.MapFrom(src => src.Gender == true ? "Nam" : "Nữ"));
+            CreateMap<Entities.Staff, Models.StaffSimpleDto>()
+                .ForMember(dest => dest.FullName,
                     opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"))
                 .ForMember(dest => dest.Age,
                     opt => opt.MapFrom(src => Helpers.DateOfBirthToAge(src.DateOfBirth)))
@@ -38,16 +45,24 @@ namespace ConvenientShop.API.Helpers
                     opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"))
                 .ForMember(dest => dest.Age,
                     opt => opt.MapFrom(src => Helpers.DateOfBirthToAge(src.DateOfBirth)))
-                .ForMember(dept => dept.Gender,
+                .ForMember(dest => dest.Gender,
                     opt => opt.MapFrom(src => src.Gender == true ? "Male" : "Female"))
                 .ForMember(dest => dest.CustomerType,
                     opt => opt.MapFrom(src => src.CustomerType.Name));
-            CreateMap<Entities.Customer, Models.CustomerForTypeDto>()
+            CreateMap<Entities.Customer, Models.CustomerSimpleDto>()
                 .ForMember(dest => dest.FullName,
                     opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"))
                 .ForMember(dest => dest.Age,
                     opt => opt.MapFrom(src => Helpers.DateOfBirthToAge(src.DateOfBirth)));
+
             CreateMap<Models.CustomerForOperationsDto, Entities.Customer>();
+
+            //Bill
+            CreateMap<Entities.Bill, Models.BillDto>()
+                .ForMember(dest => dest.CustomerName,
+                    opt => opt.MapFrom(src => $"{src.Customer.FirstName} {src.Customer.LastName}"))
+                .ForMember(dest => dest.StaffName,
+                    opt => opt.MapFrom(src => $"{src.Staff.FirstName} {src.Staff.LastName}"));
         }
     }
 }
