@@ -102,5 +102,15 @@ namespace ConvenientShop.API.Services
                 return conn.ExecuteScalar(sql, param : new { id }) != null;
             }
         }
+
+        public bool CustomerExists(int id)
+        {
+            using(var conn = Connection)
+            {
+                conn.Open();
+                var sql = "SELECT CustomerId FROM customer WHERE CustomerId = @id";
+                return conn.ExecuteScalar(sql, param : new { id }) != null;
+            }
+        }
     }
 }

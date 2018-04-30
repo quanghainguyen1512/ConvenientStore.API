@@ -3,7 +3,10 @@ using System.Linq;
 using ConvenientShop.API.Entities;
 using ConvenientShop.API.Models;
 using Dapper;
+using Dapper.Contrib.Extensions;
+using Dapper.Mapper;
 using Microsoft.Extensions.Options;
+using Z.Dapper.Plus;
 
 namespace ConvenientShop.API.Services
 {
@@ -13,7 +16,18 @@ namespace ConvenientShop.API.Services
 
         public bool AddBill(Bill bill)
         {
-            throw new System.NotImplementedException();
+            using(var conn = Connection)
+            {
+                conn.Open();
+                var r = conn.BulkInsert(bill)
+                    .ThenForEach(b =>
+                    {
+                        var list = b.BillDetails.ToList();
+                        list.ForEach(bd => bd.Bill.BillId = b.BillId);
+                    })
+                    .ThenBulkInsert(b => b.BillDetails);
+                return true;
+            }
         }
 
         public Bill GetBill(int billId)
@@ -66,8 +80,7 @@ namespace ConvenientShop.API.Services
             using(var conn = Connection)
             {
                 conn.Open();
-                var sql = "";
-                return conn.Query<Bill>(sql);
+                return conn.GetAll<Bill>();
             }
         }
 
@@ -82,14 +95,8 @@ namespace ConvenientShop.API.Services
                     "INNER JOIN customer as c ON b.CustomerId = c.CustomerId " +
                     "WHERE b.StaffId = @staffId";
 
-                return conn.Query<Bill, Customer, Staff, Bill>(
+                return conn.Query<Bill, Customer, Staff>(
                     sql,
-                    map: (b, c, s) =>
-                    {
-                        b.Customer = c;
-                        b.Staff = s;
-                        return b;
-                    },
                     splitOn: "CustomerId, StaffId",
                     param : new { staffId }
                 );

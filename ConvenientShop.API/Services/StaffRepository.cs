@@ -51,5 +51,15 @@ namespace ConvenientShop.API.Services
                 return conn.Query<Staff>(sql, param : new { id }).FirstOrDefault();
             }
         }
+
+        public bool StaffExists(int id)
+        {
+            using(var conn = Connection)
+            {
+                conn.Open();
+                var sql = "SELECT Staffid FROM staff WHERE StaffId = @id";
+                return conn.ExecuteScalar(sql, param : new { id }) != null;
+            }
+        }
     }
 }

@@ -63,6 +63,14 @@ namespace ConvenientShop.API.Helpers
                     opt => opt.MapFrom(src => $"{src.Customer.FirstName} {src.Customer.LastName}"))
                 .ForMember(dest => dest.StaffName,
                     opt => opt.MapFrom(src => $"{src.Staff.FirstName} {src.Staff.LastName}"));
+            CreateMap<Models.BillForOperationsDto, Entities.Bill>()
+                .ForMember(dest => dest.Customer.CustomerId,
+                    opt => opt.MapFrom(src => src.CustomerId))
+                .ForMember(dest => dest.Staff.StaffId,
+                    opt => opt.MapFrom(src => src.StaffId));
+            CreateMap<Entities.Bill, Models.BillForStaffDto>()
+                .ForMember(dest => dest.StaffName,
+                    opt => opt.MapFrom(src => $"{src.Staff.FirstName} {src.Staff.LastName}"));
         }
     }
 }

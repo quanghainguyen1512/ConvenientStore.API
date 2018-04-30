@@ -12,5 +12,6 @@ namespace ConvenientShop.API.Services.Interfaces
         Staff GetStaff(int id);
         bool AddStaff(Staff staff);
         bool DeleteStaff(int id);
+        bool StaffExists(int id);
     }
 }
