@@ -14,14 +14,17 @@ namespace ConvenientShop.API.Services
     {
         public SupplierRepository(IOptions<StoreConfig> config) : base(config) { }
 
+        // Not working with vietnamese
         public bool AddProductToSupplier(int supplierId, Product p)
         {
             using(var conn = Connection)
             {
                 conn.Open();
-                var sql = "INSERT INTO `mrwhoami_convenient_store`.`product` (`SupId`, `CateId`, `Name`, `Price`, `Unit`)" +
-                    $"VALUES ('{supplierId}', '{p.Category.CategoryId}', '{p.Name}', {p.Price}, '{p.Unit}')";
-                return conn.Execute(sql) > 0;
+                // var sql = "INSERT INTO `mrwhoami_convenient_store`.`product` (`SupId`, `CateId`, `Name`, `Price`, `Unit`)" +
+                //     $"VALUES ('{supplierId}', '{p.Category.CategoryId}', '{p.Name}', {p.Price}, '{p.Unit}')";
+                // return conn.Execute(sql) > 0;
+                p.Supplier.SupplierId = supplierId;
+                return conn.Insert(p) != 0;
             }
         }
 
@@ -30,16 +33,30 @@ namespace ConvenientShop.API.Services
             using(var conn = Connection)
             {
                 conn.Open();
-                var sql = "INSERT INTO `mrwhoami_convenient_store`.`supplier`(`SupplierName`, `Address`, `PhoneNumber`, `Email`)" +
-                    $" VALUES('{supplier.SupplierName}', '{supplier.Address}', '{supplier.PhoneNumber}', '{supplier.Email}')";
-                var res = conn.Execute(sql);
-                return res > 0;
+                // var sql = "INSERT INTO `mrwhoami_convenient_store`.`supplier`(`SupplierName`, `Address`, `PhoneNumber`, `Email`)" +
+                //     $" VALUES('{supplier.SupplierName}', '{supplier.Address}', '{supplier.PhoneNumber}', '{supplier.Email}')";
+                // var res = conn.Execute(sql);
+                var res = conn.Insert<Supplier>(supplier);
+                return res != 0;
             }
         }
 
-        public void DeleteProductFromSupplier(int supplierId, int productId)
+        public bool DeleteProductFromSupplier(int supplierId, Product proToDel)
         {
-            throw new System.NotImplementedException();
+            using(var conn = Connection)
+            {
+                conn.Open();
+                return conn.Delete(proToDel);
+            }
+        }
+
+        public bool DeleteSupplier(Supplier supToDel)
+        {
+            using(var conn = Connection)
+            {
+                conn.Open();
+                return conn.Delete(supToDel);
+            }
         }
 
         public Supplier GetSupplier(int supplierId, bool includeProducts)

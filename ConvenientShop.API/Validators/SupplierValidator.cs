@@ -14,7 +14,7 @@ namespace ConvenientShop.API.Validators
                 .MaximumLength(12)
                 .Matches("[0-9]+");
             RuleFor(s => s.Email).EmailAddress();
-            RuleFor(s => s.SupplierName).NotNull();
+            RuleFor(s => s.SupplierName).NotEmpty().NotNull();
         }
     }
 }
