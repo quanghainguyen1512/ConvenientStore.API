@@ -10,5 +10,8 @@ namespace ConvenientShop.API.Services.Interfaces
     {
         IEnumerable<Product> GetProducts();
         Product GetProduct(int productId, bool includeDetail);
+        ProductDetail GetProductDetail(string barcode);
+        IEnumerable<ProductDetail> GetAllDetailForProduct(int productId);
+        bool ProductExists(int productId);
     }
 }

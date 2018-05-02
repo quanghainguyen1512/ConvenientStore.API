@@ -12,6 +12,6 @@ namespace ConvenientShop.API.Entities
         public int QuantityInRepository { get; set; }
         public DateTime ExpirationDate { get; set; }
         public Product Product { get; set; }
-        // public Shipment Shipment { get; set; }
+        public Shipment Shipment { get; set; }
     }
 }

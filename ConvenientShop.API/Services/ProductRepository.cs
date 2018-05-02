@@ -14,6 +14,16 @@ namespace ConvenientShop.API.Services
     {
         public ProductRepository(IOptions<StoreConfig> config) : base(config) { }
 
+        public IEnumerable<ProductDetail> GetAllDetailForProduct(int productId)
+        {
+            using(var conn = Connection)
+            {
+                conn.Open();
+                var sql = "SELECT * FROM product_detail WHERE ProId = @productId";
+                return conn.Query<ProductDetail>(sql, param : new { productId });
+            }
+        }
+
         public Product GetProduct(int productId, bool includeDetail)
         {
             using(var conn = Connection)
@@ -59,12 +69,39 @@ namespace ConvenientShop.API.Services
             }
         }
 
+        public ProductDetail GetProductDetail(string barcode)
+        {
+            using(var conn = Connection)
+            {
+                conn.Open();
+                var sql = "SELECT * FROM product_detail AS pd " +
+                    "INNER JOIN product AS p ON p.ProductId = pd.ProId " +
+                    "INNER JOIN shipment AS s ON s.ShipmentId = pd.ShipmentId " +
+                    "WHERE pd.BarCode = @barcode";
+                return conn.Query<ProductDetail, Product, Shipment>(
+                    sql,
+                    splitOn: "ProductId, DeliveryId",
+                    param : new { barcode }
+                ).FirstOrDefault();
+            }
+        }
+
         public IEnumerable<Product> GetProducts()
         {
             using(var conn = Connection)
             {
                 conn.Open();
                 return conn.GetAll<Product>();
+            }
+        }
+
+        public bool ProductExists(int productId)
+        {
+            using(var conn = Connection)
+            {
+                conn.Open();
+                var sql = "SELECT ProductId FROM product WHERE ProductId = @productId";
+                return conn.ExecuteScalar(sql, param : new { productId }) != null;
             }
         }
     }

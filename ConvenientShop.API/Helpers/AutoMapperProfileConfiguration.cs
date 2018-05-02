@@ -40,6 +40,14 @@ namespace ConvenientShop.API.Helpers
             // .ForMember(dest => dest.CategoryName,
             //     opt => opt.MapFrom(src => src.Category.Name));
 
+            //ProductDetail
+            CreateMap<Entities.ProductDetail, Models.ProductDetailDto>()
+                .ForMember(dest => dest.ProductName,
+                    opt => opt.MapFrom(src => src.Product.Name))
+                .ForMember(dest => dest.Price,
+                    opt => opt.MapFrom(src => src.Product.Price));
+            CreateMap<Models.ProductDetailForOperationsDto, Entities.ProductDetail>();
+
             //Supplier
             CreateMap<Entities.Supplier, Models.SupplierDto>();
             CreateMap<Entities.Supplier, Models.SupplierWithoutProductsDto>();
