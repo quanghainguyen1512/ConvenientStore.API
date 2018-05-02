@@ -29,7 +29,7 @@ namespace ConvenientShop.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetProduct(int id, bool includeDetail = true)
+        public IActionResult GetProduct(int id, bool includeDetail = false)
         {
             var product = _repo.GetProduct(id, includeDetail);
             if (product is null)
@@ -42,6 +42,27 @@ namespace ConvenientShop.API.Controllers
             }
             var proWithouDetail = Mapper.Map<ProductWithoutDetailDto>(product);
             return Ok(proWithouDetail);
+        }
+
+        [HttpPost("{id}/details")]
+        public IActionResult PostDetailToProduct(int id)
+        {
+            if (!_repo.ProductExists(id))
+                return NotFound();
+
+            return null;
+        }
+
+        [HttpGet("{id}/details")]
+        public IActionResult GetDetailsForProduct(int id)
+        {
+            return null;
+        }
+
+        [HttpGet("{id}/details/{detailId}")]
+        public IActionResult GetDetail(int id, int detailId)
+        {
+            return null;
         }
     }
 }

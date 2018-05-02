@@ -1,6 +1,6 @@
 namespace ConvenientShop.API.Models
 {
-    public class CustomerForTypeDto
+    public class CustomerSimpleDto
     {
         public string FullName { get; set; }
         public int Age { get; set; }

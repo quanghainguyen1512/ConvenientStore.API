@@ -1,8 +1,8 @@
-﻿using ConvenientShop.API.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ConvenientShop.API.Entities;
 
 namespace ConvenientShop.API.Services.Interfaces
 {
@@ -12,5 +12,6 @@ namespace ConvenientShop.API.Services.Interfaces
         Staff GetStaff(int id);
         bool AddStaff(Staff staff);
         bool DeleteStaff(int id);
+        bool StaffExists(int id);
     }
 }

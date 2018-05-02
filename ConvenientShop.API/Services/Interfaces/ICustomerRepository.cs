@@ -13,5 +13,6 @@ namespace ConvenientShop.API.Services.Interfaces
         IEnumerable<CustomerType> GetCustomerTypes();
         bool PhoneNumberExists(string num);
         bool TypeExists(int id);
+        bool CustomerExists(int id);
     }
 }

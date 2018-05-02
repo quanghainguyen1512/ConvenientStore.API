@@ -17,9 +17,11 @@ namespace ConvenientShop.API.Controllers
     public class SupplierController : Controller
     {
         private ISupplierRepository _repo;
-        public SupplierController(ISupplierRepository repo)
+        private readonly IProductRepository _prepo;
+        public SupplierController(ISupplierRepository repo, IProductRepository prepo)
         {
-            _repo = repo;
+            this._prepo = prepo;
+            this._repo = repo;
         }
 
         [HttpGet]
@@ -62,6 +64,33 @@ namespace ConvenientShop.API.Controllers
             return _repo.AddSupplier(supToAdd) ?
                 StatusCode(201, "Create Successfully") :
                 StatusCode(500, "A problem happened while handling your request.");
+        }
+
+        [HttpDelete("{id}/products/{proId}")]
+        public IActionResult DeleteProductFromSupplier(int id, int proId)
+        {
+            if (!_repo.SupplierExists(id))
+                return NotFound();
+
+            var proToDel = _prepo.GetProduct(proId, false);
+            if (proToDel is null)
+                return NotFound();
+
+            if (!_repo.DeleteProductFromSupplier(id, proToDel))
+                return StatusCode(500, "A problem happened while handling your request.");
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteSupplier(int id)
+        {
+            var sup = _repo.GetSupplier(id, false);
+            if (sup is null)
+                return NotFound();
+
+            if (!_repo.DeleteSupplier(sup))
+                return StatusCode(500, "A problem happened while handling your request.");
+            return NoContent();
         }
     }
 }

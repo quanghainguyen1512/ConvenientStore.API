@@ -14,6 +14,7 @@ namespace ConvenientShop.API.Services.Interfaces
         bool SupplierExists(int supplierId);
         bool AddSupplier(Supplier supplier);
         bool AddProductToSupplier(int supplierId, Product product);
-        void DeleteProductFromSupplier(int supplierId, int productId);
+        bool DeleteProductFromSupplier(int supplierId, Product proToDel);
+        bool DeleteSupplier(Supplier supToDel);
     }
 }

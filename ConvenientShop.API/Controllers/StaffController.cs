@@ -15,11 +15,13 @@ namespace ConvenientShop.API.Controllers
     [Route("api/staffs")]
     public class StaffController : Controller
     {
-        private IStaffRepository _repo;
+        private IStaffRepository _staffRepo;
+        private readonly IBillRepository _brepo;
 
-        public StaffController(IStaffRepository repo)
+        public StaffController(IStaffRepository srepo, IBillRepository brepo)
         {
-            _repo = repo;
+            this._staffRepo = srepo;
+            this._brepo = brepo;
         }
 
         [HttpGet]
@@ -28,20 +30,28 @@ namespace ConvenientShop.API.Controllers
             if (userId == -1)
                 return Unauthorized();
 
-            var staffs = _repo.GetAllStaffs();
+            var staffs = _staffRepo.GetAllStaffs();
 
-            var result = Mapper.Map<IEnumerable<StaffDto>>(staffs);
+            var result = Mapper.Map<IEnumerable<StaffSimpleDto>>(staffs);
             return Ok(result);
         }
 
         [HttpGet("{id}")]
         public IActionResult GetStaff(int id)
         {
-            var staff = _repo.GetStaff(id);
+            var staff = _staffRepo.GetStaff(id);
             if (staff is null)
                 return NotFound();
 
             var result = Mapper.Map<StaffDto>(staff);
+            return Ok(result);
+        }
+
+        [HttpGet("{id}/bills")]
+        public IActionResult GetBillsByStaff(int id)
+        {
+            var bills = _brepo.GetBillsByStaff(id);
+            var result = Mapper.Map<BillForStaffDto>(bills);
             return Ok(result);
         }
     }
