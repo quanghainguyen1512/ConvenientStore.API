@@ -3,7 +3,7 @@ using Dapper.Contrib.Extensions;
 
 namespace ConvenientShop.API.Entities
 {
-    [Table("order")]
+    [Table("order_action")]
     public class Order
     {
         [Key]

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using ConvenientShop.API.Models;
@@ -19,6 +20,6 @@ namespace ConvenientShop.API.Services
             _storeConfig = config.Value;
         }
 
-        public IDbConnection Connection => new MySqlConnection(_storeConfig.DbConnectionString);
+        public IDbConnection Connection => new SqlConnection(_storeConfig.DbConnectionString);
     }
 }
