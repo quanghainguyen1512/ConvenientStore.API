@@ -7,8 +7,15 @@ namespace ConvenientShop.API.Entities
     {
         [Key]
         public int OrderDetailId { get; set; }
-        public Product Product { get; set; }
-        public Order Order { get; set; }
         public int Quantity { get; set; }
+        public bool IsReceived { get; set; }
+        public int ProductId { get; set; }
+        public int OrderId { get; set; }
+
+        [Write(false)]
+        public Product Product { get; set; }
+
+        [Write(false)]
+        public Order Order { get; set; }
     }
 }

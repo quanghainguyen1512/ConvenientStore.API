@@ -12,10 +12,17 @@ namespace ConvenientShop.API.Entities
         [Key]
         public int ProductId { get; set; }
         public string Name { get; set; }
-        public int Price { get; set; }
         public string Unit { get; set; }
+        public int SupplierId { get; set; }
+        public int CategoryId { get; set; }
+
+        [Write(false)]
         public Supplier Supplier { get; set; }
+
+        [Write(false)]
         public Category Category { get; set; }
+
+        [Write(false)]
         public ICollection<ProductDetail> Details { get; set; }
     }
 }
