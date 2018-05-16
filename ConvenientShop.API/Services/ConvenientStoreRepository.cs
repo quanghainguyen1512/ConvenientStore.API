@@ -20,6 +20,6 @@ namespace ConvenientShop.API.Services
             _storeConfig = config.Value;
         }
 
-        public IDbConnection Connection => new SqlConnection(_storeConfig.DbConnectionString);
+        public IDbConnection Connection => new MySqlConnection(_storeConfig.DbConnectionString);
     }
 }
