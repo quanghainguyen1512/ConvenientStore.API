@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ConvenientShop.API.Entities;
 using ConvenientShop.API.Models;
 using ConvenientShop.API.Services.Interfaces;
 using Dapper;
+using Dapper.Contrib.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ConvenientShop.API.Services
@@ -19,20 +21,19 @@ namespace ConvenientShop.API.Services
             {
                 var sql = "SELECT Username FROM has_permission as hp " +
                     "INNER JOIN account as a " +
-                    "ON a.RoleId = hp.RoleId" +
+                    "ON a.RoleId = hp.RoleId " +
                     "WHERE hp.PermissionId = @permId AND a.AccountId = @accId";
                 var res = conn.ExecuteScalar(sql, param : new { permId = (int) perm, accId });
                 return res != null;
             }
         }
 
-        public void CreateAccount(string username, string password, int roleId)
+        public bool CreateAccount(Account newAcc)
         {
             using(var conn = Connection)
             {
-                var sql = "INSERT INTO `account` (`Username`, `Password`, `RoleId`) " +
-                    "VALUES (@username, @password, @roleId)";
-                conn.Execute(sql, param : new { username, password, roleId });
+                conn.Open();
+                return conn.Insert(newAcc) != 0;
             }
         }
 
@@ -46,13 +47,15 @@ namespace ConvenientShop.API.Services
             }
         }
 
-        public(bool, AccountDto) LogIn(string username, string password)
+        public int LogIn(string username, string password)
         {
             using(var conn = Connection)
             {
                 var sql = "SELECT AccountId, Username FROM account WHERE Username like @username && Password like @password";
-                var accountId = conn.QueryFirstOrDefault<AccountDto>(sql, param : new { username, password });
-                return (!(accountId is null), accountId as AccountDto);
+                var account = conn.QueryFirstOrDefault<AccountDto>(sql, param : new { username, password });
+                if (account is AccountDto acc)
+                    return acc.AccountId;
+                return -1;
             }
         }
     }
@@ -77,6 +80,7 @@ namespace ConvenientShop.API.Services
         EditAccount,
         ViewAccount,
         ChangeMyPassword,
-        EditCustomerInfo
+        EditCustomerInfo,
+        AddBill
     }
 }
