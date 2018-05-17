@@ -14,5 +14,17 @@ namespace ConvenientShop.API.Helpers
 
             return tempDate.Year - 1;
         }
+
+        public static string Base64Encode(string str)
+        {
+            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(str);
+            return System.Convert.ToBase64String(plainTextBytes);
+        }
+
+        public static string Base64Decode(string encodedStr)
+        {
+            var encodedBytes = System.Convert.FromBase64String(encodedStr);
+            return System.Text.Encoding.UTF8.GetString(encodedBytes);
+        }
     }
 }
