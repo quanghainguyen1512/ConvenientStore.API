@@ -28,10 +28,12 @@ namespace ConvenientShop.API.Controllers
         {
             var data = Helpers.Helpers.Base64Decode(encodedStr);
             var extractedData = data.Split(':');
-            var accountId = _repo.LogIn(extractedData[0], extractedData[1]);
-            if (accountId == -1)
+            var staff = _repo.LogIn(extractedData[0], extractedData[1]);
+            if (staff is null)
                 return Unauthorized();
-            return Ok(accountId);
+
+            var loginSession = Mapper.Map<StaffLogInSessionInfo>(staff);
+            return Ok(loginSession);
         }
 
         [HttpPost]
@@ -58,7 +60,7 @@ namespace ConvenientShop.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteAccount(int id, int accountId)
+        public IActionResult DeleteAccount(int id, int accountId = -1)
         {
             if (!_repo.AuthorizeUser(accountId, Permission.DeleteAccount))
                 return Unauthorized();

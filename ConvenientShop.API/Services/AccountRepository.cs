@@ -77,15 +77,14 @@ namespace ConvenientShop.API.Services
             }
         }
 
-        public int LogIn(string username, string password)
+        public Staff LogIn(string username, string password)
         {
             using(var conn = Connection)
             {
-                var sql = "SELECT AccountId, Username FROM account WHERE Username like @username && Password like @password";
-                var account = conn.QueryFirstOrDefault<AccountDto>(sql, param : new { username, password });
-                if (account is AccountDto acc)
-                    return acc.AccountId;
-                return -1;
+                var sql = "SELECT s.AccountId, s.StaffId, s.FirstName, s.LastName FROM account AS a " +
+                    "INNER JOIN staff AS s ON s.AccountId = a.AccountId " +
+                    "WHERE Username like @username && Password like @password";
+                return conn.QueryFirstOrDefault<Staff>(sql, param : new { username, password });
             }
         }
     }

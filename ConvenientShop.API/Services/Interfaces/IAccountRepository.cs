@@ -14,6 +14,6 @@ namespace ConvenientShop.API.Services.Interfaces
         bool IsAccountExists(int accountId);
         bool CreateAccount(Account newAcc);
         bool DeleteAccount(int accountId);
-        int LogIn(string username, string password);
+        Staff LogIn(string username, string password);
     }
 }
