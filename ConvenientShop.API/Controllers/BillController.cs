@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using AutoMapper;
 using ConvenientShop.API.Entities;
 using ConvenientShop.API.Models;
@@ -52,6 +53,7 @@ namespace ConvenientShop.API.Controllers
         [HttpPost]
         public IActionResult PostBill([FromBody] BillForOperationsDto bill, int accountId = -1)
         {
+            if (bill is null) return BadRequest();
             if (!_arepo.AuthorizeUser(accountId, Permission.AddBill))
                 return Unauthorized();
 
@@ -59,8 +61,12 @@ namespace ConvenientShop.API.Controllers
             if (!isValid)
                 return BadRequest(errs);
 
-            if (!_srepo.StaffExists(bill.StaffId))
-                return BadRequest();
+            for (var i = 0; i < bill.BillDetails.Count(); i++)
+            {
+                var (isBdValid, errors) = bill.BillDetails.ElementAt(i).Validate(i);
+                if (!isBdValid)
+                    return BadRequest(errors);
+            }
 
             var billToAdd = Mapper.Map<Bill>(bill);
             return _repo.AddBill(billToAdd) ?

@@ -19,14 +19,26 @@ namespace ConvenientShop.API.Services
             using(var conn = Connection)
             {
                 conn.Open();
+                DapperPlusManager.Entity<Bill>()
+                    .Table("bill")
+                    .Identity(b => b.BillId)
+                    .Ignore(b => b.BillDetails)
+                    .Ignore(b => b.Staff);
+                DapperPlusManager.Entity<BillDetail>()
+                    .Table("bill_detail")
+                    .Ignore(bd => bd.Bill)
+                    .Ignore(bd => bd.ProductDetail)
+                    .Map(bd => new
+                    {
+                        bd.BillDetailId,
+                            BillId = bd.Bill.BillId,
+                            bd.Quantity,
+                            bd.BarCode
+                    });
                 using(var tran = conn.BeginTransaction())
                 {
                     var r = conn.BulkInsert(bill)
-                        .ThenForEach(b =>
-                        {
-                            var list = b.BillDetails.ToList();
-                            list.ForEach(bd => bd.Bill.BillId = b.BillId);
-                        })
+                        .ThenForEach(b => b.BillDetails.ForEach(bd => bd.Bill = b))
                         .ThenBulkInsert(b => b.BillDetails);
                     tran.Commit();
                     return true;
@@ -42,15 +54,15 @@ namespace ConvenientShop.API.Services
                 if (!includeDetail)
                     return conn.Get<Bill>(billId);
 
-                var sql = "SELECT b.CreatedDateTime, b.TotalPrice, " +
-                    "c.CustomerId, c.FirstName, c.LastName, " +
+                var sql = "SELECT b.BillId, b.CreatedDateTime, " +
+                    // "c.CustomerId, c.FirstName, c.LastName, " +
                     "s.StaffId, s.FirstName, s.LastName, " +
-                    "pd.BarCode, " +
-                    "p.Name, p.Price, " +
+                    "pd.BarCode, pd.Price, " +
+                    "p.Name, " +
                     "bd.Quantity " +
                     "FROM bill as b " +
                     "INNER JOIN staff as s ON b.StaffId = s.StaffId " +
-                    "INNER JOIN customer as c ON b.CustomerId = c.CustomerId " +
+                    // "INNER JOIN customer as c ON b.CustomerId = c.CustomerId " +
                     "INNER JOIN bill_detail as bd ON b.BillId = bd.BillId " +
                     "INNER JOIN product_detail as pd ON bd.BarCode = pd.BarCode " +
                     "INNER JOIN product as p ON pd.ProId = p.ProductId " +
@@ -75,7 +87,7 @@ namespace ConvenientShop.API.Services
                         entry.BillDetails.Add(bd);
                         return entry;
                     },
-                    splitOn: "CustomerId, StaffId, BarCode, Name, Quantity",
+                    splitOn: "StaffId, BarCode, Name, Quantity",
                     param : new { billId }
                 ).FirstOrDefault();
             }
@@ -95,7 +107,7 @@ namespace ConvenientShop.API.Services
             using(var conn = Connection)
             {
                 conn.Open();
-                var sql = "SELECT b.CreatedDateTime, b.TotalPrice, s.StaffId, s.FirstName, s.LastName " +
+                var sql = "SELECT b.BillId, b.CreatedDateTime, s.StaffId, s.FirstName, s.LastName " +
                     "FROM bill as b " +
                     "INNER JOIN staff as s ON b.StaffId = s.StaffId " +
                     // "INNER JOIN customer as c ON b.CustomerId = c.CustomerId " +

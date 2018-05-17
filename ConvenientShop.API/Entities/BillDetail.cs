@@ -9,8 +9,8 @@ namespace ConvenientShop.API.Entities
         [Key]
         public int BillDetailId { get; set; }
         public int Quantity { get; set; }
-        public int ProductDetailId { get; set; }
-        public int BillId { get; set; }
+        public string BarCode { get; set; }
+        // public int BillId { get; set; }
 
         [Write(false)]
         public ProductDetail ProductDetail { get; set; }

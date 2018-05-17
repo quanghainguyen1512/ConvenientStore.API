@@ -17,6 +17,6 @@ namespace ConvenientShop.API.Entities
         public Staff Staff { get; set; }
 
         [Write(false)]
-        public ICollection<BillDetail> BillDetails { get; set; }
+        public List<BillDetail> BillDetails { get; set; }
     }
 }

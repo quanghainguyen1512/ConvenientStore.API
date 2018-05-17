@@ -9,8 +9,8 @@ namespace ConvenientShop.API.Models
         public int BillId { get; set; }
         public string StaffName { get; set; }
         public DateTime CreatedDateTime { get; set; }
-        public int TotalPrice => BillDetails.Sum(bd => bd.SubTotal);
         // public string CustomerName { get; set; }
         public IEnumerable<BillDetailDto> BillDetails { get; set; }
+        public int TotalPrice => BillDetails.Sum(bd => bd.SubTotal);
     }
 }
