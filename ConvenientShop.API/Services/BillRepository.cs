@@ -19,22 +19,29 @@ namespace ConvenientShop.API.Services
             using(var conn = Connection)
             {
                 conn.Open();
-                var r = conn.BulkInsert(bill)
-                    .ThenForEach(b =>
-                    {
-                        var list = b.BillDetails.ToList();
-                        list.ForEach(bd => bd.Bill.BillId = b.BillId);
-                    })
-                    .ThenBulkInsert(b => b.BillDetails);
-                return true;
+                using(var tran = conn.BeginTransaction())
+                {
+                    var r = conn.BulkInsert(bill)
+                        .ThenForEach(b =>
+                        {
+                            var list = b.BillDetails.ToList();
+                            list.ForEach(bd => bd.Bill.BillId = b.BillId);
+                        })
+                        .ThenBulkInsert(b => b.BillDetails);
+                    tran.Commit();
+                    return true;
+                }
             }
         }
 
-        public Bill GetBill(int billId)
+        public Bill GetBill(int billId, bool includeDetail)
         {
             using(var conn = Connection)
             {
                 conn.Open();
+                if (!includeDetail)
+                    return conn.Get<Bill>(billId);
+
                 var sql = "SELECT b.CreatedDateTime, b.TotalPrice, " +
                     "c.CustomerId, c.FirstName, c.LastName, " +
                     "s.StaffId, s.FirstName, s.LastName, " +
@@ -51,11 +58,10 @@ namespace ConvenientShop.API.Services
 
                 var dict = new Dictionary<int, Bill>();
 
-                return conn.Query<Bill, Customer, Staff, ProductDetail, Product, BillDetail, Bill>(
+                return conn.Query<Bill, Staff, ProductDetail, Product, BillDetail, Bill>(
                     sql,
-                    map: (b, c, s, pd, p, bd) =>
+                    map: (b, s, pd, p, bd) =>
                     {
-                        b.Customer = c;
                         b.Staff = s;
                         pd.Product = p;
                         bd.ProductDetail = pd;
@@ -89,15 +95,15 @@ namespace ConvenientShop.API.Services
             using(var conn = Connection)
             {
                 conn.Open();
-                var sql = "SELECT b.CreatedDateTime, b.TotalPrice, c.CustomerId, c.FirstName, c.LastName, s.StaffId, s.FirstName, s.LastName " +
+                var sql = "SELECT b.CreatedDateTime, b.TotalPrice, s.StaffId, s.FirstName, s.LastName " +
                     "FROM bill as b " +
                     "INNER JOIN staff as s ON b.StaffId = s.StaffId " +
-                    "INNER JOIN customer as c ON b.CustomerId = c.CustomerId " +
+                    // "INNER JOIN customer as c ON b.CustomerId = c.CustomerId " +
                     "WHERE b.StaffId = @staffId";
 
-                return conn.Query<Bill, Customer, Staff>(
+                return conn.Query<Bill, Staff>(
                     sql,
-                    splitOn: "CustomerId, StaffId",
+                    splitOn: "StaffId",
                     param : new { staffId }
                 );
             }

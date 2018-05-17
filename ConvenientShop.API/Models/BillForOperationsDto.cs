@@ -9,9 +9,9 @@ namespace ConvenientShop.API.Models
     public class BillForOperationsDto
     {
         public int StaffId { get; set; }
-        public int CustomerId { get; set; }
+        // public int CustomerId { get; set; }
         public DateTime CreatedDateTime { get; set; }
-        public int TotalPrice { get; set; }
+        public IEnumerable<BillDetailForOperationsDto> BillDetails { get; set; }
 
         public(bool isValid, IEnumerable<ValidationResult> errors) Validate()
         {

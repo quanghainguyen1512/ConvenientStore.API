@@ -10,9 +10,9 @@ namespace ConvenientShop.API.Validators
         public BillValidator()
         {
             RuleFor(b => b.StaffId).NotNull().GreaterThan(0);
-            RuleFor(b => b.CustomerId).NotNull().GreaterThan(0);
+            // RuleFor(b => b.CustomerId).NotNull().GreaterThan(0);
             RuleFor(b => b.CreatedDateTime).NotNull();
-            RuleFor(b => b.TotalPrice).GreaterThanOrEqualTo(1000);
+            RuleFor(b => b.BillDetails).NotEmpty();
         }
     }
 }
