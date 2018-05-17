@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ConvenientShop.API.Entities;
 using ConvenientShop.API.Models;
 
 namespace ConvenientShop.API.Services.Interfaces
 {
     public interface IAccountRepository
     {
-        bool AuthorizeUser(int userId, Permission perm);
+        bool AuthorizeUser(int accountId, Permission perm);
         bool IsUsernameExists(string username);
-        void CreateAccount(string username, string password, int roleId);
-        (bool, AccountDto) LogIn(string username, string password);
+        bool CreateAccount(Account newAcc);
+        int LogIn(string username, string password);
     }
 }
