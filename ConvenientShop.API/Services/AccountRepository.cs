@@ -37,13 +37,43 @@ namespace ConvenientShop.API.Services
             }
         }
 
-        public bool IsUsernameExists(string username)
+        public bool DeleteAccount(int accountId)
+        {
+            using(var conn = Connection)
+            {
+                conn.Open();
+                using(var tran = conn.BeginTransaction())
+                {
+                    var sql = "UPDATE staff SET AccountId = NULL WHERE AccountId = @accountId";
+                    if (conn.Execute(sql, param : new { accountId }) == 0)
+                        return false;
+                    sql = "DELETE FROM account WHERE AccountId = @accountId";
+                    if (conn.Execute(sql, param : new { accountId }) == 0)
+                        return false;
+
+                    tran.Commit();
+                    return true;
+                }
+            }
+        }
+
+        public bool IsAccountExists(string username)
         {
             using(var conn = Connection)
             {
                 var sql = "SELECT Username FROM account WHERE Username like @username";
                 var result = conn.ExecuteScalar(sql, param : new { username });
                 return result != null;
+            }
+        }
+
+        public bool IsAccountExists(int accountId)
+        {
+            using(var conn = Connection)
+            {
+                conn.Open();
+                var acc = conn.Get<Account>(accountId);
+                return acc != null;
             }
         }
 
@@ -71,7 +101,7 @@ namespace ConvenientShop.API.Services
         ViewShelfDetail,
         EditProductCategory,
         EditOffer,
-        ViewOffer,
+        ViewOrder,
         ViewCustomerInfo,
         ViewBillHistory,
         ViewPermission,
@@ -81,6 +111,7 @@ namespace ConvenientShop.API.Services
         ViewAccount,
         ChangeMyPassword,
         EditCustomerInfo,
-        AddBill
+        AddBill,
+        DeleteAccount
     }
 }

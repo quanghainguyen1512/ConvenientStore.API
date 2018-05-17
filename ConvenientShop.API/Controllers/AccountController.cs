@@ -56,5 +56,18 @@ namespace ConvenientShop.API.Controllers
                 StatusCode(201, "Create Successfully") :
                 StatusCode(500, "A problem happened while handling your request.");
         }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteAccount(int id, int accountId)
+        {
+            if (!_repo.AuthorizeUser(accountId, Permission.DeleteAccount))
+                return Unauthorized();
+            if (_repo.IsAccountExists(id))
+                return NotFound();
+
+            if (!_repo.DeleteAccount(id))
+                return StatusCode(500, "A problem happened while handling your request");
+            return NoContent();
+        }
     }
 }

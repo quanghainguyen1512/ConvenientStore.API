@@ -10,8 +10,10 @@ namespace ConvenientShop.API.Services.Interfaces
     public interface IAccountRepository
     {
         bool AuthorizeUser(int accountId, Permission perm);
-        bool IsUsernameExists(string username);
+        bool IsAccountExists(string username);
+        bool IsAccountExists(int accountId);
         bool CreateAccount(Account newAcc);
+        bool DeleteAccount(int accountId);
         int LogIn(string username, string password);
     }
 }
