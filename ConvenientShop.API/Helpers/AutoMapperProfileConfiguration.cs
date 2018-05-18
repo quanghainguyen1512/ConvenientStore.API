@@ -46,8 +46,8 @@ namespace ConvenientShop.API.Helpers
             CreateMap<Models.ProductDetailForOperationsDto, Entities.ProductDetail>();
 
             //Supplier
-            CreateMap<Entities.Supplier, Models.SupplierWithoutProductsDto>()
-                .Include<Entities.Supplier, Models.SupplierDto>();
+            CreateMap<Entities.Supplier, Models.SupplierWithoutProductsDto>();
+            CreateMap<Entities.Supplier, Models.SupplierDto>();
             CreateMap<Models.SupplierWithoutProductsDto, Entities.Supplier>();
 
             //Customer
@@ -89,6 +89,12 @@ namespace ConvenientShop.API.Helpers
                 .ForMember(dest => dest.StaffName,
                     opt => opt.MapFrom(src => $"{src.Staff.FirstName} {src.Staff.LastName}"));
             CreateMap<Models.OrderForOperationsDto, Entities.Order>();
+
+            //OrderDetail
+            CreateMap<Models.OrderDetailForOperationsDto, Entities.OrderDetail>();
+            CreateMap<Entities.OrderDetail, Models.OrderDetailDto>()
+                .ForMember(dest => dest.ProductName,
+                    opt => opt.MapFrom(src => src.Product.Name));
 
             //Delivery
             CreateMap<Entities.Delivery, Models.DeliveryDto>();
