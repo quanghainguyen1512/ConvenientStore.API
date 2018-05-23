@@ -9,7 +9,6 @@ namespace ConvenientShop.API.Models
     {
         public string BarCode { get; set; }
         public int Quantity { get; set; }
-        public int BillId { get; set; }
 
         public(bool isValid, IEnumerable<ValidationResult> errors) Validate(int index)
         {

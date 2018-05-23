@@ -11,7 +11,7 @@ namespace ConvenientShop.API.Validators
         {
             RuleFor(b => b.StaffId).NotNull().GreaterThan(0);
             // RuleFor(b => b.CustomerId).NotNull().GreaterThan(0);
-            RuleFor(b => b.CreatedDateTime).NotNull();
+            RuleFor(b => b.CreatedDateTime).NotNull().GreaterThanOrEqualTo(DateTime.Today);
             RuleFor(b => b.BillDetails).NotEmpty();
         }
     }

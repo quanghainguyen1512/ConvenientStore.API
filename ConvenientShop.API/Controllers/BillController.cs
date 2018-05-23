@@ -16,12 +16,14 @@ namespace ConvenientShop.API.Controllers
     {
         private readonly IBillRepository _repo;
         private readonly IAccountRepository _arepo;
+        private readonly IProductRepository _prepo;
         private readonly IStaffRepository _srepo;
 
-        public BillController(IBillRepository repo, IStaffRepository srepo, IAccountRepository arepo)
+        public BillController(IBillRepository repo, IStaffRepository srepo, IAccountRepository arepo, IProductRepository prepo)
         {
             this._srepo = srepo;
             this._arepo = arepo;
+            this._prepo = prepo;
             this._repo = repo;
         }
 
@@ -31,7 +33,7 @@ namespace ConvenientShop.API.Controllers
             if (!_arepo.AuthorizeUser(accountId, Permission.ViewBillHistory))
                 return Unauthorized();
             var bills = _repo.GetBills();
-            var result = Mapper.Map<IEnumerable<BillDto>>(bills);
+            var result = Mapper.Map<IEnumerable<BillSimpleDto>>(bills);
             return Ok(result);
         }
 
@@ -49,7 +51,6 @@ namespace ConvenientShop.API.Controllers
             return Ok(result);
         }
 
-        // Need to test
         [HttpPost]
         public IActionResult PostBill([FromBody] BillForOperationsDto bill, int accountId = -1)
         {
@@ -60,18 +61,23 @@ namespace ConvenientShop.API.Controllers
             var (isValid, errs) = bill.Validate();
             if (!isValid)
                 return BadRequest(errs);
+            if (!_srepo.StaffExists(bill.StaffId))
+                return NotFound();
 
             for (var i = 0; i < bill.BillDetails.Count(); i++)
             {
-                var (isBdValid, errors) = bill.BillDetails.ElementAt(i).Validate(i);
+                var bd = bill.BillDetails.ElementAt(i);
+                var (isBdValid, errors) = bd.Validate(i);
                 if (!isBdValid)
                     return BadRequest(errors);
+                if (!_prepo.ProductDetailExists(bd.BarCode))
+                    return NotFound();
             }
 
             var billToAdd = Mapper.Map<Bill>(bill);
             return _repo.AddBill(billToAdd) ?
-                StatusCode(201, "Create Successfully") :
-                StatusCode(500, "A problem happened while handling your request.");
+                new StatusCodeResult(StatusCodes.Status201Created) :
+                new StatusCodeResult(StatusCodes.Status500InternalServerError);
         }
     }
 }
