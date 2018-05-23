@@ -7,8 +7,10 @@ using ConvenientShop.API.Entities;
 using ConvenientShop.API.Models;
 using ConvenientShop.API.Services.Interfaces;
 using Dapper;
+using Dapper.Contrib.Extensions;
 using Microsoft.Extensions.Options;
 using MySql.Data.MySqlClient;
+using Z.Dapper.Plus;
 
 namespace ConvenientShop.API.Services
 {
@@ -17,18 +19,28 @@ namespace ConvenientShop.API.Services
         public StaffRepository(IOptions<StoreConfig> config) : base(config) { }
         public bool AddStaff(Staff staff)
         {
-            var rowsInfected = 0;
             using(var conn = Connection)
             {
                 conn.Open();
-                //var sql = "";
+                return conn.Insert(staff) != 0;
             }
-            return rowsInfected != 0;
         }
 
-        public bool DeleteStaff(int id)
+        public bool DeleteStaff(Staff staffToDel)
         {
-            throw new NotImplementedException();
+            using(var conn = Connection)
+            {
+                conn.Open();
+                using(var tran = conn.BeginTransaction())
+                {
+                    var accountId = staffToDel.AccountId;
+                    staffToDel.AccountId = -1;
+                    conn.Update<Staff>(staffToDel, tran);
+                    conn.Delete<Account>(new Account { AccountId = accountId }, tran);
+                    tran.Commit();
+                    return true;
+                }
+            }
         }
 
         public IEnumerable<Staff> GetAllStaffs()
@@ -36,7 +48,7 @@ namespace ConvenientShop.API.Services
             using(var conn = Connection)
             {
                 conn.Open();
-                var sql = "SELECT s.FirstName, s.LastName, s.DateOfBirth, s.Gender FROM mrwhoami_convenient_store.staff as s";
+                var sql = "SELECT s.FirstName, s.LastName, s.DateOfBirth, s.Gender FROM staff as s";
                 return conn.Query<Staff>(sql);
             }
         }
@@ -46,7 +58,7 @@ namespace ConvenientShop.API.Services
             using(var conn = Connection)
             {
                 conn.Open();
-                var sql = "SELECT s.FirstName, s.LastName, s.DateOfBirth, s.Gender, s.PhoneNumber, s.IdentityNumber FROM mrwhoami_convenient_store.staff as s " +
+                var sql = "SELECT s.FirstName, s.LastName, s.DateOfBirth, s.Gender, s.PhoneNumber, s.IdentityNumber FROM staff as s " +
                     "WHERE StaffId = @id";
                 return conn.Query<Staff>(sql, param : new { id }).FirstOrDefault();
             }
@@ -59,6 +71,15 @@ namespace ConvenientShop.API.Services
                 conn.Open();
                 var sql = "SELECT Staffid FROM staff WHERE StaffId = @id";
                 return conn.ExecuteScalar(sql, param : new { id }) != null;
+            }
+        }
+
+        public bool UpdateStaff(Staff staffToUpdate)
+        {
+            using(var conn = Connection)
+            {
+                conn.Open();
+                return conn.Update(staffToUpdate);
             }
         }
     }
