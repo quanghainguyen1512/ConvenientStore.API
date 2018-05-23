@@ -18,9 +18,12 @@ namespace ConvenientShop.API.Controllers
     {
         private ISupplierRepository _repo;
         private readonly IProductRepository _prepo;
-        public SupplierController(ISupplierRepository repo, IProductRepository prepo)
+        private readonly IAccountRepository _arepo;
+
+        public SupplierController(ISupplierRepository repo, IProductRepository prepo, IAccountRepository arepo)
         {
             this._prepo = prepo;
+            this._arepo = arepo;
             this._repo = repo;
         }
 
@@ -50,47 +53,55 @@ namespace ConvenientShop.API.Controllers
         }
 
         [HttpPost]
-        public IActionResult PostSupplier([FromBody] SupplierWithoutProductsDto supplier)
+        public IActionResult PostSupplier([FromBody] SupplierWithoutProductsDto supplier, int accountId = -1)
         {
             if (supplier is null)
                 return BadRequest();
-
+            if (!_arepo.AuthorizeUser(accountId, Permission.AddSupplier))
+                return Unauthorized();
             var (isValid, errors) = supplier.Validate();
-
             if (!isValid)
                 return BadRequest(errors);
 
             var supToAdd = Mapper.Map<Supplier>(supplier);
             return _repo.AddSupplier(supToAdd) ?
-                StatusCode(201, "Create Successfully") :
-                StatusCode(500, "A problem happened while handling your request.");
+                new StatusCodeResult(StatusCodes.Status201Created) :
+                new StatusCodeResult(StatusCodes.Status500InternalServerError);
         }
 
-        [HttpDelete("{id}/products/{proId}")]
-        public IActionResult DeleteProductFromSupplier(int id, int proId)
+        // [HttpDelete("{id}/products/{proId}")]
+        // public IActionResult DeleteProductFromSupplier(int id, int proId)
+        // {
+        //     if (!_repo.SupplierExists(id))
+        //         return NotFound();
+
+        //     var proToDel = _prepo.GetProduct(proId, false);
+        //     if (proToDel is null)
+        //         return NotFound();
+
+        //     if (!_repo.DeleteProductFromSupplier(id, proToDel))
+        //         return StatusCode(500, "A problem happened while handling your request.");
+        //     return NoContent();
+        // }
+
+        [HttpPut("{id}")]
+        public IActionResult PutSupplier(int id, [FromBody] SupplierWithoutProductsDto supplier, int accountId = -1)
         {
+            if (supplier is null)
+                return BadRequest();
+            if (!_arepo.AuthorizeUser(accountId, Permission.AddSupplier))
+                return Unauthorized();
+            var (isValid, errs) = supplier.Validate();
+            if (!isValid)
+                return BadRequest(errs);
+
             if (!_repo.SupplierExists(id))
                 return NotFound();
 
-            var proToDel = _prepo.GetProduct(proId, false);
-            if (proToDel is null)
-                return NotFound();
-
-            if (!_repo.DeleteProductFromSupplier(id, proToDel))
-                return StatusCode(500, "A problem happened while handling your request.");
-            return NoContent();
-        }
-
-        [HttpDelete("{id}")]
-        public IActionResult DeleteSupplier(int id)
-        {
-            var sup = _repo.GetSupplier(id, false);
-            if (sup is null)
-                return NotFound();
-
-            if (!_repo.DeleteSupplier(sup))
-                return StatusCode(500, "A problem happened while handling your request.");
-            return NoContent();
+            var supToUpdate = Mapper.Map<Supplier>(supplier);
+            return _repo.UpdateSupplier(supToUpdate) ?
+                new StatusCodeResult(StatusCodes.Status204NoContent) :
+                new StatusCodeResult(StatusCodes.Status500InternalServerError);
         }
     }
 }

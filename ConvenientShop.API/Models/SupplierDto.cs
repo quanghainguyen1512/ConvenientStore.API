@@ -1,16 +1,12 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace ConvenientShop.API.Models
 {
-    public class SupplierDto
+    public class SupplierDto : SupplierWithoutProductsDto
     {
-        public string SupplierName { get; set; }
-        public string Address { get; set; }
-        public string PhoneNumber { get; set; }
-        public string Email { get; set; }
         public ICollection<ProductWithoutDetailDto> Products { get; set; } = new List<ProductWithoutDetailDto>();
         public int NumberOfProducts => Products.Count;
     }
