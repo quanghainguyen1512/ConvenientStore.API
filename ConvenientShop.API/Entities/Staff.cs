@@ -17,7 +17,7 @@ namespace ConvenientShop.API.Entities
         public DateTime DateOfBirth { get; set; }
         public bool Gender { get; set; } // 1: male - 0: female
         public string PhoneNumber { get; set; }
-        public int AccountId { get; set; }
+        public int AccountId { get; set; } = -1;
 
         [Write(false)]
         public ICollection<Bill> Bills { get; set; }
