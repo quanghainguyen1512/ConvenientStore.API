@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using ConvenientShop.API.Entities;
@@ -14,13 +15,53 @@ namespace ConvenientShop.API.Services
     {
         public ProductRepository(IOptions<StoreConfig> config) : base(config) { }
 
-        public IEnumerable<ProductDetail> GetAllDetailForProduct(int productId)
+        public bool ExportFromRepo(string barcode, int quantity)
         {
             using(var conn = Connection)
             {
                 conn.Open();
-                var sql = "SELECT * FROM product_detail WHERE ProId = @productId";
-                return conn.Query<ProductDetail>(sql, param : new { productId });
+                var sql = "EXECUTE dbo.USP_ExportFromRepo @quantity, @barcode";
+                return conn.Execute(
+                    sql,
+                    param : new { barcode, quantity }
+                ) != 0;
+            }
+        }
+
+        public(IEnumerable<ProductDetail> result, int totalCount) GetAllProductDetails(Helpers.ProductDetailsResourceParameters parameters)
+        {
+            using(var conn = Connection)
+            {
+                conn.Open();
+                var param = new DynamicParameters();
+                param.Add("page", parameters.PageNumber);
+                param.Add("size", parameters.PageSize);
+                param.Add("searchQuery", parameters.SearchQuery);
+                param.Add("totalCount", dbType : DbType.Int32, direction : ParameterDirection.Output);
+
+                // var sql = "EXECUTE dbo.USP_GetProducDetailsWithPagination @page, @size, @totalCount = @count OUTPUT";
+                var sql = "USP_GetProducDetailsWithPagination";
+                var result = conn.Query<ProductDetail, Product>(
+                        sql,
+                        splitOn: "Name",
+                        param : param,
+                        commandType : CommandType.StoredProcedure
+                    );
+                var totalCount = param.Get<int>("totalCount");
+                return (result, totalCount);
+            }
+        }
+
+        public int GetNumbersOfPage(int size)
+        {
+            using(var conn = Connection)
+            {
+                conn.Open();
+                var sql = "EXECUTE dbo.USP_GetTotalPage @size";
+                return conn.ExecuteScalar(
+                    sql,
+                    param : new { size }
+                ) is int a ? a : -1;
             }
         }
 
@@ -92,6 +133,17 @@ namespace ConvenientShop.API.Services
             {
                 conn.Open();
                 return conn.GetAll<Product>();
+            }
+        }
+
+        public bool ProductDetailExists(string barcode)
+        {
+            using(var conn = Connection)
+            {
+                conn.Open();
+                var sql = "SELECT BarCode FROM product_detail " +
+                    "WHERE BarCode = @barcode";
+                return conn.ExecuteScalar(sql, param : new { barcode }) != null;
             }
         }
 

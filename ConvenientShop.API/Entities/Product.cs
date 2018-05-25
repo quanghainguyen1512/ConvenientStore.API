@@ -15,6 +15,7 @@ namespace ConvenientShop.API.Entities
         public string Unit { get; set; }
         public int SupplierId { get; set; }
         public int CategoryId { get; set; }
+        public string ImageUrl { get; set; }
 
         [Write(false)]
         public Supplier Supplier { get; set; }

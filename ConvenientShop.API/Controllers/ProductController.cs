@@ -14,10 +14,13 @@ namespace ConvenientShop.API.Controllers
     [Route("api/products")]
     public class ProductController : Controller
     {
-        private IProductRepository _repo;
-        public ProductController(IProductRepository repo)
+        private readonly IProductRepository _repo;
+        private readonly IAccountRepository _arepo;
+
+        public ProductController(IProductRepository repo, IAccountRepository arepo)
         {
-            _repo = repo;
+            this._repo = repo;
+            this._arepo = arepo;
         }
 
         [HttpGet]
@@ -64,5 +67,7 @@ namespace ConvenientShop.API.Controllers
         {
             return null;
         }
+
+        // [HttpPost("/exports")]
     }
 }

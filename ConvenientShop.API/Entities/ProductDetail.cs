@@ -8,17 +8,18 @@ namespace ConvenientShop.API.Entities
     {
         [ExplicitKey]
         public string BarCode { get; set; }
-        public int Price { get; set; }
         public int QuantityOnStore { get; set; }
+
+        [Write(false)]
+        public int Price { get; set; }
+
+        [Write(false)]
         public int QuantityInRepository { get; set; }
+
+        [Write(false)]
         public DateTime ExpirationDate { get; set; }
-        public int ProductId { get; set; }
-        public int ShipmentId { get; set; }
 
         [Write(false)]
         public Product Product { get; set; }
-
-        [Write(false)]
-        public Shipment Shipment { get; set; }
     }
 }
