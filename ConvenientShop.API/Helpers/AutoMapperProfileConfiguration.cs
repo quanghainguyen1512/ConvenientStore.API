@@ -23,12 +23,6 @@ namespace ConvenientShop.API.Helpers
             CreateMap<Entities.Staff, Models.StaffLogInSessionInfo>()
                 .ForMember(dest => dest.FullName,
                     opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"));
-            // .ForMember(dest => dest.FullName,
-            //     opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"))
-            // .ForMember(dest => dest.Age,
-            //     opt => opt.MapFrom(src => Helpers.DateOfBirthToAge(src.DateOfBirth)))
-            // .ForMember(dept => dept.Gender,
-            //     opt => opt.MapFrom(src => src.Gender == true ? "Nam" : "Nữ"));
 
             //Product
             CreateMap<Entities.Product, Models.ProductWithoutDetailDto>()
@@ -43,6 +37,11 @@ namespace ConvenientShop.API.Helpers
             CreateMap<Entities.ProductDetail, Models.ProductDetailDto>()
                 .ForMember(dest => dest.ProductName,
                     opt => opt.MapFrom(src => src.Product.Name));
+            CreateMap<Entities.ProductDetail, Models.ProductDetailSimpleDto>()
+                .ForMember(dest => dest.ProductName,
+                    opt => opt.MapFrom(src => src.Product.Name))
+                .ForMember(dest => dest.Unit,
+                    opt => opt.MapFrom(src => src.Product.Unit));
             CreateMap<Models.ProductDetailForOperationsDto, Entities.ProductDetail>();
 
             //Supplier
@@ -58,10 +57,6 @@ namespace ConvenientShop.API.Helpers
                     opt => opt.MapFrom(src => Helpers.DateOfBirthToAge(src.DateOfBirth)))
                 .Include<Entities.Customer, Models.CustomerDto>();
             CreateMap<Entities.Customer, Models.CustomerDto>()
-                // .ForMember(dest => dest.FullName,
-                //     opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"))
-                // .ForMember(dest => dest.Age,
-                //     opt => opt.MapFrom(src => Helpers.DateOfBirthToAge(src.DateOfBirth)))
                 .ForMember(dest => dest.Gender,
                     opt => opt.MapFrom(src => src.Gender == true ? "Male" : "Female"))
                 .ForMember(dest => dest.CustomerType,
@@ -84,6 +79,9 @@ namespace ConvenientShop.API.Helpers
                 .ForMember(dest => dest.StaffName,
                     opt => opt.MapFrom(src => $"{src.Staff.FirstName} {src.Staff.LastName}"));
 
+            //Bill Detail
+            CreateMap<Models.BillDetailForOperationsDto, Entities.BillDetail>();
+            CreateMap<Entities.BillDetail, Models.BillDetailDto>();
             //Order
             CreateMap<Entities.Order, Models.OrderDto>()
                 .ForMember(dest => dest.StaffName,
@@ -98,9 +96,10 @@ namespace ConvenientShop.API.Helpers
 
             //Delivery
             CreateMap<Entities.Delivery, Models.DeliveryDto>();
-            CreateMap<Models.DeliveryForOperationsDto, Entities.Delivery>()
-                .ForPath(dest => dest.Supplier.SupplierId,
-                    opt => opt.MapFrom(src => src.SupplierId));
+            CreateMap<Models.DeliveryForOperationsDto, Entities.Delivery>();
+
+            //Shipment
+            CreateMap<Models.ShipmentForOperationsDto, Entities.Shipment>();
         }
     }
 }

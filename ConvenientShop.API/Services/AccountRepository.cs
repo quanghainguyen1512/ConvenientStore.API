@@ -45,11 +45,14 @@ namespace ConvenientShop.API.Services
                 using(var tran = conn.BeginTransaction())
                 {
                     var sql = "UPDATE staff SET AccountId = NULL WHERE AccountId = @accountId";
-                    if (conn.Execute(sql, param : new { accountId }) == 0)
+                    if (conn.Execute(sql, param : new { accountId }, transaction : tran) == 0)
                         return false;
                     sql = "DELETE FROM account WHERE AccountId = @accountId";
-                    if (conn.Execute(sql, param : new { accountId }) == 0)
+                    if (conn.Execute(sql, param : new { accountId }, transaction : tran) == 0)
+                    {
+                        tran.Rollback();
                         return false;
+                    }
 
                     tran.Commit();
                     return true;
@@ -83,7 +86,7 @@ namespace ConvenientShop.API.Services
             {
                 var sql = "SELECT s.AccountId, s.StaffId, s.FirstName, s.LastName FROM account AS a " +
                     "INNER JOIN staff AS s ON s.AccountId = a.AccountId " +
-                    "WHERE Username like @username && Password like @password";
+                    "WHERE Username like @username AND Password like @password";
                 return conn.QueryFirstOrDefault<Staff>(sql, param : new { username, password });
             }
         }
@@ -111,6 +114,7 @@ namespace ConvenientShop.API.Services
         ChangeMyPassword,
         EditCustomerInfo,
         AddBill,
-        DeleteAccount
+        DeleteAccount,
+        AddSupplier
     }
 }
