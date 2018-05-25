@@ -37,7 +37,7 @@ namespace ConvenientShop.API.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateAccount([FromBody] string encodedStr, int accountId = -1)
+        public IActionResult CreateAccount(string encodedStr, int accountId = -1)
         {
             if (!_repo.AuthorizeUser(accountId, Permission.EditAccount))
                 return Unauthorized();
