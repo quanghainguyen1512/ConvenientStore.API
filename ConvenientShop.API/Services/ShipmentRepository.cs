@@ -75,7 +75,7 @@ namespace ConvenientShop.API.Services
             using(var conn = Connection)
             {
                 conn.Open();
-                var sql = "SELECT * ";
+
                 return null;
             }
         }

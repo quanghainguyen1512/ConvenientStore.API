@@ -62,7 +62,7 @@ namespace ConvenientShop.API.Services
                         }
                         conn.Update(pd, tran);
                     }
-                    catch (Exception e)
+                    catch
                     {
                         tran.Rollback();
                         return false;
