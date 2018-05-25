@@ -8,7 +8,8 @@ namespace ConvenientShop.API.Validators
     {
         public OrderValidator()
         {
-            RuleFor(o => o.OrderDateTime).NotNull().GreaterThanOrEqualTo(DateTime.Today);
+            RuleFor(o => o.OrderDateTime).NotNull().GreaterThanOrEqualTo(DateTime.Today)
+                .WithMessage("Order Date must be greater than or equal today");
             RuleFor(o => o.OrderDetails).NotEmpty();
         }
     }

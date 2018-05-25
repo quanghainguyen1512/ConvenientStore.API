@@ -20,31 +20,30 @@ namespace ConvenientShop.API.Services
             using(var conn = Connection)
             {
                 conn.Open();
-                DapperPlusManager.Entity<Order>().Table("order_action")
-                    .Identity(o => o.OrderId)
-                    .Ignore(o => o.Staff)
-                    .Ignore(o => o.OrderDetails);
-                DapperPlusManager.Entity<OrderDetail>()
-                    .Table("order_detail")
-                    .Ignore(od => od.Product);
-                conn.BulkInsert(orderToAdd)
-                    .ThenForEach(o => o.OrderDetails.ForEach(d => d.OrderId = o.OrderId))
-                    .ThenBulkInsert(o => o.OrderDetails);
-                // using(var tran = conn.BeginTransaction())
-                // {
-                //     DapperPlusManager.Entity<Order>().Table("order_action")
-                //         .Identity(o => o.OrderId)
-                //         .Ignore(o => o.Staff)
-                //         .Ignore(o => o.OrderDetails);
-                //     DapperPlusManager.Entity<OrderDetail>()
-                //         .Table("order_detail")
-                //         .Ignore(od => od.Product);
-                //     conn.BulkInsert(orderToAdd)
-                //         .ThenForEach(o => o.OrderDetails.ForEach(d => d.OrderId = o.OrderId))
-                //         .ThenBulkInsert(o => o.OrderDetails);
-                //     tran.Commit();
-                // }
-                return true;
+                using(var tran = conn.BeginTransaction())
+                {
+                    DapperPlusManager.Entity<Order>().Table("order_action")
+                        .Identity(o => o.OrderId)
+                        .Ignore(o => o.Staff)
+                        .Ignore(o => o.OrderDetails);
+                    DapperPlusManager.Entity<OrderDetail>()
+                        .Table("order_detail")
+                        .Identity(od => od.OrderDetailId)
+                        .Ignore(od => od.Product);
+                    try
+                    {
+                        tran.BulkInsert(orderToAdd)
+                            .ThenForEach(o => o.OrderDetails.ForEach(d => d.OrderId = o.OrderId))
+                            .ThenBulkInsert(o => o.OrderDetails);
+                    }
+                    catch (System.Exception)
+                    {
+                        tran.Rollback();
+                        return false;
+                    }
+                    tran.Commit();
+                    return true;
+                }
             }
         }
 
@@ -126,6 +125,17 @@ namespace ConvenientShop.API.Services
                     "INNER JOIN dbo.staff AS s ON o.StaffId = s.StaffId " +
                     "WHERE o.StaffId = @staffId";
                 return conn.Query<Order>(sql, param : new { staffId });
+            }
+        }
+
+        public bool OrderDetailExists(int id, out int quantityinrepo)
+        {
+            using(var conn = Connection)
+            {
+                conn.Open();
+                var od = conn.Get<OrderDetail>(id);
+                quantityinrepo = od.ProductQuantity;
+                return od != null;
             }
         }
     }

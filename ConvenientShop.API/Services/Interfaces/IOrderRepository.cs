@@ -11,5 +11,6 @@ namespace ConvenientShop.API.Services.Interfaces
         IEnumerable<OrderDetail> GetOrderDetailsForOrder(int orderId);
         Order GetOrder(int orderId, bool includeDetails);
         bool AddOrder(Order orderToAdd);
+        bool OrderDetailExists(int id, out int quantityinrepo);
     }
 }

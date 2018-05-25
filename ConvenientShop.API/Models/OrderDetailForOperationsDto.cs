@@ -7,6 +7,7 @@ namespace ConvenientShop.API.Models
 {
     public class OrderDetailForOperationsDto
     {
+        public int OrderDetailId { get; set; }
         public int ProductId { get; set; }
         public int ProductQuantity { get; set; }
         public bool IsReceived { get; set; } = false;

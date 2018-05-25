@@ -19,7 +19,7 @@ namespace ConvenientShop.API.Controllers
         private readonly IOrderRepository _repo;
         private readonly IAccountRepository _arepo;
         private readonly IStaffRepository _srepo;
-        private readonly IProductRepository _prepo;
+    private readonly IProductRepository _prepo;
 
         public OrderController(IOrderRepository repo, IAccountRepository arepo, IStaffRepository srepo, IProductRepository prepo)
         {
@@ -63,17 +63,17 @@ namespace ConvenientShop.API.Controllers
                 return NotFound();
             foreach (var item in order.OrderDetails)
             {
-                var (isOdValid, e) = item.Validate();
-                if (!isOdValid)
-                    return BadRequest(e);
+                (isValid, err) = item.Validate();
+                if (!isValid)
+                    return BadRequest(err);
                 if (!_prepo.ProductExists(item.ProductId))
                     return NotFound();
             }
 
             var orderToAdd = Mapper.Map<Order>(order);
             return _repo.AddOrder(orderToAdd) ?
-                StatusCode(200, "Created Order successfully") :
-                StatusCode(500, "A problem happened while handling your request.");
+                new StatusCodeResult(StatusCodes.Status201Created) :
+                new StatusCodeResult(StatusCodes.Status500InternalServerError);
         }
     }
 }
