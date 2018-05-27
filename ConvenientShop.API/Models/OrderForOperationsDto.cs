@@ -10,6 +10,7 @@ namespace ConvenientShop.API.Models
     {
         public int StaffId { get; set; }
         public DateTime OrderDateTime { get; set; }
+        public int SupplierId { get; set; }
         public IEnumerable<OrderDetailForOperationsDto> OrderDetails { get; set; }
         public(bool isValid, IEnumerable<ValidationResult> errors) Validate()
         {

@@ -28,7 +28,7 @@ namespace ConvenientShop.API.Services
                     DapperPlusManager.Entity<Delivery>()
                         .Table("delivery")
                         .Identity(d => d.DeliveryId)
-                        // .Ignore(d => d.Supplier)
+                        .Ignore(d => d.Supplier)
                         .Ignore(d => d.Shipments);
                     DapperPlusManager.Entity<Shipment>()
                         .Table("shipment")
@@ -115,7 +115,7 @@ namespace ConvenientShop.API.Services
                     return conn.Get<Delivery>(deliveryId);
 
                 var sql = "SELECT d.DeliveryId, d.DeliveryDate, d.Cost, " +
-                " " +
+                    " " +
                     "FROM dbo.delivery AS d " +
                     "INNER JOIN dbo.supplier AS su ON su.SupplierId = d.Supplier " +
                     "INNER JOIN dbo.shipment AS sh ON d.DeliveryId = s.DeliveryId " +

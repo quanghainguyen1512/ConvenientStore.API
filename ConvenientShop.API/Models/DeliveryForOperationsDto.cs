@@ -10,6 +10,7 @@ namespace ConvenientShop.API.Models
     {
         public DateTime DeliveryDate { get; set; }
         public int Cost { get; set; }
+        public int SupplierId { get; set; }
         public IEnumerable<ShipmentForOperationsDto> Shipments { get; set; }
         public(bool isValid, IEnumerable<ValidationResult> errors) Validate()
         {

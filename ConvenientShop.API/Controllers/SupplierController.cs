@@ -52,6 +52,30 @@ namespace ConvenientShop.API.Controllers
             return Ok(resultWithoutProduct);
         }
 
+        [HttpGet("{id}/orders")]
+        public IActionResult GetOrdersForSupplier(int id, int accountId = -1)
+        {
+            if (!_arepo.AuthorizeUser(accountId, Permission.ViewOrder))
+                return Unauthorized();
+            if (!_repo.SupplierExists(id))
+                return NotFound();
+            var ords = _repo.GetOrdersForSupplier(id);
+            var result = Mapper.Map<IEnumerable<OrderDto>>(ords);
+            return Ok(result);
+        }
+
+        [HttpGet("{id}/delivery")]
+        public IActionResult GetDeliveryForSupplier(int id, int accountId = -1)
+        {
+            if (!_arepo.AuthorizeUser(accountId, Permission.ViewDelivery))
+                return Unauthorized();
+            if (!_repo.SupplierExists(id))
+                return NotFound();
+            var ords = _repo.GetAllDeliveryForSupplier(id);
+            var result = Mapper.Map<IEnumerable<DeliveryDto>>(ords);
+            return Ok(result);
+        }
+
         [HttpPost]
         public IActionResult PostSupplier([FromBody] SupplierWithoutProductsDto supplier, int accountId = -1)
         {
@@ -97,7 +121,7 @@ namespace ConvenientShop.API.Controllers
 
             if (!_repo.SupplierExists(id))
                 return NotFound();
-
+            supplier.SupplierId = id;
             var supToUpdate = Mapper.Map<Supplier>(supplier);
             return _repo.UpdateSupplier(supToUpdate) ?
                 new StatusCodeResult(StatusCodes.Status204NoContent) :

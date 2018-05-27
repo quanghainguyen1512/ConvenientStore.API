@@ -107,5 +107,31 @@ namespace ConvenientShop.API.Services
                 return conn.Update(supToUpdate);
             }
         }
+
+        public IEnumerable<Delivery> GetAllDeliveryForSupplier(int supplierId)
+        {
+            using(var conn = Connection)
+            {
+                conn.Open();
+                var sql = "SELECT * FROM delivery WHERE SupplierId = @supplierId";
+                return conn.Query<Delivery>(
+                    sql,
+                    param : new { supplierId }
+                );
+            }
+        }
+
+        public IEnumerable<Order> GetOrdersForSupplier(int supplierId)
+        {
+            using(var conn = Connection)
+            {
+                conn.Open();
+                var sql = "SELECT * FROM order_action WHERE SupplierId = @supplierId";
+                return conn.Query<Order, Supplier>(
+                    sql,
+                    param : new { supplierId }
+                );
+            }
+        }
     }
 }

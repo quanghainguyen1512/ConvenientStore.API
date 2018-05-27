@@ -11,6 +11,8 @@ namespace ConvenientShop.API.Services.Interfaces
     {
         IEnumerable<Supplier> GetSuppliers();
         Supplier GetSupplier(int supplierId, bool includeProducts);
+        IEnumerable<Delivery> GetAllDeliveryForSupplier(int supplierId);
+        IEnumerable<Order> GetOrdersForSupplier(int supplierId);
         bool SupplierExists(int supplierId);
         bool AddSupplier(Supplier supplier);
         bool AddProductToSupplier(int supplierId, Product product);

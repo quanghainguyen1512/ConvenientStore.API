@@ -11,7 +11,10 @@ namespace ConvenientShop.API.Entities
         public int OrderId { get; set; }
         public DateTime OrderDateTime { get; set; }
         public int StaffId { get; set; }
-
+        public int SupplierId { get; set; }
+        
+        [Write(false)]
+        public Supplier Supplier { get; set; }
         [Write(false)]
         public Staff Staff { get; set; }
 

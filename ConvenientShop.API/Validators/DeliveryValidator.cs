@@ -11,6 +11,7 @@ namespace ConvenientShop.API.Validators
             RuleFor(d => d.Cost).NotNull().GreaterThan(1000);
             RuleFor(d => d.DeliveryDate).NotEqual(new DateTime()).WithMessage("Delivery Time should be set, not the initial value");
             RuleFor(d => d.Shipments).NotEmpty();
+            RuleFor(d => d.SupplierId).NotNull().GreaterThan(0);
         }
     }
 }

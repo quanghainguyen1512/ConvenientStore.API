@@ -11,9 +11,9 @@ namespace ConvenientShop.API.Entities
         public int DeliveryId { get; set; }
         public DateTime DeliveryDate { get; set; }
         public int Cost { get; set; }
-
-        // [Write(false)]
-        // public Supplier Supplier { get; set; }
+        public int SupplierId { get; set; }
+        [Write(false)]
+        public Supplier Supplier { get; set; }
 
         [Write(false)]
         public List<Shipment> Shipments { get; set; }

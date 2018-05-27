@@ -111,11 +111,6 @@ namespace ConvenientShop.API.Services
             }
         }
 
-        public IEnumerable<Order> GetOrdersForShipment(int shipmentId)
-        {
-            throw new System.NotImplementedException();
-        }
-
         public IEnumerable<Order> GetOrdersForStaff(int staffId)
         {
             using(var conn = Connection)
