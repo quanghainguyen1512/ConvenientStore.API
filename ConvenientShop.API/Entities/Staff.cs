@@ -18,6 +18,7 @@ namespace ConvenientShop.API.Entities
         public bool Gender { get; set; } // 1: male - 0: female
         public string PhoneNumber { get; set; }
         public int AccountId { get; set; } = -1;
+        public string ImageUrl { get; set; }
 
         [Write(false)]
         public ICollection<Bill> Bills { get; set; }

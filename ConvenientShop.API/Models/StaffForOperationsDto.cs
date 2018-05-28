@@ -15,6 +15,7 @@ namespace ConvenientShop.API.Models
         public DateTime DateOfBirth { get; set; }
         public bool Gender { get; set; } // 1: male - 0: female
         public string PhoneNumber { get; set; }
+        public string ImageUrl { get; set; }
 
         public(bool isValid, IEnumerable<ValidationResult> errors) Validate()
         {

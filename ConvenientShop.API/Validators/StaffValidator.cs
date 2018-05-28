@@ -14,7 +14,11 @@ namespace ConvenientShop.API.Validators
             RuleFor(s => s.FirstName).NotEmpty();
             RuleFor(s => s.LastName).NotEmpty();
             RuleFor(s => s.DateOfBirth).LessThan(DateTime.Today).WithMessage("The date of birth must be less than current date");
-            RuleFor(s => s.IdentityNumber).NotEmpty();
+            RuleFor(s => s.IdentityNumber)
+                .MinimumLength(9)
+                .MaximumLength(12)
+                .Matches("^[0-9]+$")
+                .NotNull();
             RuleFor(s => s.PhoneNumber)
                 .MinimumLength(9)
                 .MaximumLength(12)

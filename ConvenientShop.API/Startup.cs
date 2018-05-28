@@ -51,6 +51,7 @@ namespace ConvenientShop.API
             services.AddScoped<IBillRepository, BillRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IDeliveryRepository, DeliveryRepository>();
+            services.AddScoped<IReportRepository, ReportRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

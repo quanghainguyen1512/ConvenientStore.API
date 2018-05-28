@@ -9,6 +9,8 @@ using ConvenientShop.API.Services;
 using ConvenientShop.API.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace ConvenientShop.API.Controllers
 {
@@ -63,17 +65,23 @@ namespace ConvenientShop.API.Controllers
         }
 
         [HttpPost]
-        public IActionResult PostStaff([FromBody] StaffForOperationsDto staff, int accountId = -1)
+        public IActionResult PostStaff([FromBody] IEnumerable<object> objs, int accountId = -1)
         {
-            if (staff is null)
+            var staff = (objs.ElementAt(0) as JObject)?.ToObject<StaffForOperationsDto>();
+            var account = (objs.ElementAt(1) as JObject)?.ToObject<AccountForOperationsDto>();
+            if (staff is null || account is null)
                 return BadRequest();
             if (!_arepo.AuthorizeUser(accountId, Permission.EditStaffInfo))
                 return Unauthorized();
-            var (isValid, err) = staff.Validate();
+            var (isValid, err) = account.Validate();
+            if (!isValid)
+                return BadRequest(err);
+            (isValid, err) = staff.Validate();
             if (!isValid)
                 return BadRequest(err);
             var staffToAdd = Mapper.Map<Staff>(staff);
-            return _sRepo.AddStaff(staffToAdd) ?
+            var newAccount = Mapper.Map<Account>(account);
+            return _sRepo.AddStaff(staffToAdd, newAccount) ?
                 new StatusCodeResult(StatusCodes.Status201Created) :
                 new StatusCodeResult(StatusCodes.Status500InternalServerError);
         }

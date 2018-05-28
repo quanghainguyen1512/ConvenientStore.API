@@ -17,12 +17,34 @@ namespace ConvenientShop.API.Services
     public class StaffRepository : ConvenientStoreRepository, IStaffRepository
     {
         public StaffRepository(IOptions<StoreConfig> config) : base(config) { }
-        public bool AddStaff(Staff staff)
+        public bool AddStaff(Staff staff, Account newAccount)
         {
             using(var conn = Connection)
             {
                 conn.Open();
-                return conn.Insert(staff) != 0;
+                using(var tran = conn.BeginTransaction())
+                {
+                    DapperPlusManager.Entity<Account>()
+                        .Table("account")
+                        .Identity(a => a.AccountId);
+                    DapperPlusManager.Entity<Staff>()
+                        .Table("staff")
+                        .Identity(s => s.StaffId)
+                        .Ignore(s => s.Bills);
+                    try
+                    {
+                        tran.BulkInsert(newAccount)
+                            .ThenForEach(a => staff.AccountId = a.AccountId)
+                            .BulkInsert(staff);
+                        tran.Commit();
+                        return true;
+                    }
+                    catch
+                    {
+                        tran.Rollback();
+                        return false;
+                    }
+                }
             }
         }
 

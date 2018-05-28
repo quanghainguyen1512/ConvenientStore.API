@@ -10,7 +10,7 @@ namespace ConvenientShop.API.Services.Interfaces
     {
         IEnumerable<Staff> GetAllStaffs();
         Staff GetStaff(int id);
-        bool AddStaff(Staff staff);
+        bool AddStaff(Staff staff, Account newAccount);
         bool DeleteStaff(Staff staffToDel);
         bool StaffExists(int id);
         bool UpdateStaff(Staff staffToUpdate);

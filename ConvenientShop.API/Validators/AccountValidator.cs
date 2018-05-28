@@ -11,8 +11,8 @@ namespace ConvenientShop.API.Validators
     {
         public AccountValidator()
         {
-            RuleFor(a => a.Username).MinimumLength(8).Matches("[A-Za-z0-9").WithMessage("The username is invalid, only accecpt words and numbers");
-            RuleFor(a => a.Password).MinimumLength(8).Matches("[A-Za-z0-9").WithMessage("The password is invalid, only accecpt words and numbers");
+            RuleFor(a => a.Username).MinimumLength(6).Matches("[A-Za-z0-9]+").WithMessage("The username is invalid, only accecpt words and numbers");
+            RuleFor(a => a.Password).MinimumLength(6).Matches("[A-Za-z0-9]+").WithMessage("The password is invalid, only accecpt words and numbers");
         }
     }
 }
