@@ -48,8 +48,7 @@ namespace ConvenientShop.API.Services
             using(var conn = Connection)
             {
                 conn.Open();
-                var sql = "SELECT s.FirstName, s.LastName, s.DateOfBirth, s.Gender FROM staff as s";
-                return conn.Query<Staff>(sql);
+                return conn.GetAll<Staff>();
             }
         }
 
