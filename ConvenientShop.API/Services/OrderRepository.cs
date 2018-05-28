@@ -100,7 +100,7 @@ namespace ConvenientShop.API.Services
             using(var conn = Connection)
             {
                 conn.Open();
-                var sql = "SELECT od.OrderDetailId, od.ProductQuantity, p.Name, od.IsReceived " +
+                var sql = "SELECT od.OrderDetailId, od.ProductQuantity, od.IsReceived, p.Name " +
                     "FROM order_detail AS od " +
                     "INNER JOIN product AS p ON od.ProductId = p.ProductId " +
                     "WHERE od.OrderId = @orderId";
