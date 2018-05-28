@@ -127,7 +127,7 @@ namespace ConvenientShop.API.Services
             {
                 conn.Open();
                 var sql = "SELECT * FROM order_action WHERE SupplierId = @supplierId";
-                return conn.Query<Order, Supplier>(
+                return conn.Query<Order>(
                     sql,
                     param : new { supplierId }
                 );
