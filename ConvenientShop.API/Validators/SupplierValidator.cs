@@ -12,7 +12,7 @@ namespace ConvenientShop.API.Validators
             RuleFor(s => s.PhoneNumber)
                 .MinimumLength(9)
                 .MaximumLength(12)
-                .Matches("[0-9]+[^a-z]")
+                .Matches("^[0-9]+$")
                 .NotNull();
             RuleFor(s => s.Email).EmailAddress();
             RuleFor(s => s.SupplierName).NotNull().NotEmpty();
