@@ -79,9 +79,7 @@ namespace ConvenientShop.API.Services
             using(var conn = Connection)
             {
                 conn.Open();
-                var sql = "SELECT s.FirstName, s.LastName, s.DateOfBirth, s.Gender, s.PhoneNumber, s.IdentityNumber FROM staff as s " +
-                    "WHERE StaffId = @id";
-                return conn.Query<Staff>(sql, param : new { id }).FirstOrDefault();
+                return conn.Get<Staff>(id);
             }
         }
 
