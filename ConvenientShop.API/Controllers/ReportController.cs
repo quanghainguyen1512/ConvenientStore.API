@@ -10,10 +10,12 @@ namespace ConvenientShop.API.Controllers
     public class ReportController : Controller
     {
         private readonly IReportRepository _repo;
+        private readonly IProductRepository _prepo;
 
-        public ReportController(IReportRepository repo)
+        public ReportController(IReportRepository repo, IProductRepository prepo)
         {
             this._repo = repo;
+            this._prepo = prepo;
         }
 
         [HttpGet("revenue")]
@@ -26,6 +28,19 @@ namespace ConvenientShop.API.Controllers
             }
 
             return Ok(_repo.GetRevenue(timespan, date));
+        }
+
+        [HttpGet("importexport")]
+        public IActionResult GetDataForImportingExportingReport(string time, char timespan = 'd', int productId = -1)
+        {
+            if (!DateTime.TryParseExact(time, "yyyy-MM-dd",
+                    CultureInfo.InvariantCulture, DateTimeStyles.None, out var date))
+            {
+                return BadRequest();
+            }
+            if (!_prepo.ProductExists(productId))
+                return NotFound();
+            return Ok(_repo.GetDataForImportExport(timespan, date, productId));
         }
     }
 }
