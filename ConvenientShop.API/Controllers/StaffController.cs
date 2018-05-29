@@ -105,5 +105,17 @@ namespace ConvenientShop.API.Controllers
                 new StatusCodeResult(StatusCodes.Status500InternalServerError);
         }
 
+        [HttpDelete("{id}")]
+        public IActionResult DeleteStaff(int id, int accountId = -1)
+        {
+            if (!_arepo.AuthorizeUser(accountId, Permission.EditStaffInfo))
+                return Unauthorized();
+            var staff = _sRepo.GetStaff(id);
+            if (staff is null)
+                return NotFound();
+            return _sRepo.DeleteStaff(staff) ?
+                new StatusCodeResult(StatusCodes.Status204NoContent) :
+                new StatusCodeResult(StatusCodes.Status500InternalServerError);
+        }
     }
 }

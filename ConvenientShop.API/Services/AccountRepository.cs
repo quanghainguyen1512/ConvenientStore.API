@@ -115,6 +115,7 @@ namespace ConvenientShop.API.Services
         EditCustomerInfo,
         AddBill,
         DeleteAccount,
-        AddSupplier
+        AddSupplier,
+        ViewProductDetail
     }
 }
