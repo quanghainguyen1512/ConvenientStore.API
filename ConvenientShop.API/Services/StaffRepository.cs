@@ -70,7 +70,8 @@ namespace ConvenientShop.API.Services
             using(var conn = Connection)
             {
                 conn.Open();
-                return conn.GetAll<Staff>();
+                var sql = "SELECT * FROM staff WHERE AccountId <> -1";
+                return conn.Query<Staff>(sql);
             }
         }
 
