@@ -32,14 +32,17 @@ namespace ConvenientShop.API.Helpers
             CreateMap<Entities.Product, Models.ProductDto>();
 
             //ProductDetail
-            CreateMap<Entities.ProductDetail, Models.ProductDetailDto>()
-                .ForMember(dest => dest.ProductName,
-                    opt => opt.MapFrom(src => src.Product.Name));
             CreateMap<Entities.ProductDetail, Models.ProductDetailSimpleDto>()
                 .ForMember(dest => dest.ProductName,
                     opt => opt.MapFrom(src => src.Product.Name))
                 .ForMember(dest => dest.Unit,
                     opt => opt.MapFrom(src => src.Product.Unit));
+            CreateMap<Entities.ProductDetail, Models.ProductDetailDto>()
+                .IncludeBase<Entities.ProductDetail, Models.ProductDetailSimpleDto>()
+                .ForMember(dest => dest.SupplierName,
+                    opt => opt.MapFrom(src => src.Supplier.SupplierName))
+                .ForMember(dest => dest.Category,
+                    opt => opt.MapFrom(src => src.Category.Name));
             CreateMap<Models.ProductDetailForOperationsDto, Entities.ProductDetail>();
 
             //Supplier
@@ -101,6 +104,9 @@ namespace ConvenientShop.API.Helpers
 
             //Account
             CreateMap<Models.AccountForOperationsDto, Entities.Account>();
+
+            //Export
+            CreateMap<Entities.Export, Models.ExportForProductDetailDto>();
         }
     }
 }

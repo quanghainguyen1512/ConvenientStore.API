@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Dapper.Contrib.Extensions;
 
 namespace ConvenientShop.API.Entities
@@ -21,5 +22,14 @@ namespace ConvenientShop.API.Entities
 
         [Write(false)]
         public Product Product { get; set; }
+
+        [Write(false)]
+        public Supplier Supplier { get; set; }
+
+        [Write(false)]
+        public Category Category { get; set; }
+
+        [Write(false)]
+        public ICollection<Export> ExportHistory { get; set; }
     }
 }

@@ -46,7 +46,10 @@ namespace ConvenientShop.API.Services
                     DapperPlusManager.Entity<ProductDetail>()
                         .Table("product_detail")
                         .Key(pd => pd.BarCode)
-                        .Ignore(pd => pd.Product);
+                        .Ignore(pd => pd.Product)
+                        .Ignore(pd => pd.Supplier)
+                        .Ignore(pd => pd.Category)
+                        .Ignore(pd => pd.ExportHistory);
                     DapperPlusManager.Entity<OrderDetail>()
                         .Table("order_detail")
                         .Key(od => od.OrderDetailId)

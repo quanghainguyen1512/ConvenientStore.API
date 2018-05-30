@@ -115,14 +115,30 @@ namespace ConvenientShop.API.Services
             using(var conn = Connection)
             {
                 conn.Open();
-                var sql = "SELECT * FROM product_detail AS pd " +
-                    "INNER JOIN product AS p ON p.ProductId = pd.ProId " +
-                    "INNER JOIN shipment AS s ON s.ShipmentId = pd.ShipmentId " +
-                    "WHERE pd.BarCode = @barcode";
-                return conn.Query<ProductDetail, Product, Shipment>(
+                var sql = "USP_GetOneProductDetail";
+                var dict = new Dictionary<string, ProductDetail>();
+
+                return conn.Query<ProductDetail, Product, Supplier, Category, Export, ProductDetail>(
                     sql,
-                    splitOn: "ProductId, DeliveryId",
-                    param : new { barcode }
+                    map: (pd, p, s, c, e) =>
+                    {
+                        pd.Supplier = s;
+                        pd.Product = p;
+                        pd.Category = c;
+
+                        if (!dict.TryGetValue(pd.BarCode, out var entry))
+                        {
+                            entry = pd;
+                            entry.ExportHistory = new List<Export>();
+                            dict.Add(entry.BarCode, entry);
+                        }
+                        entry.ExportHistory.Add(e);
+
+                        return entry;
+                    },
+                    splitOn: "ProductId, SupplierId, CategoryId, ExportedDateTime",
+                    param : new { barcode },
+                    commandType : CommandType.StoredProcedure
                 ).FirstOrDefault();
             }
         }

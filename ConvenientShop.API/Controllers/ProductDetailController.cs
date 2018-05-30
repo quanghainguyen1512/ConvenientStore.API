@@ -44,7 +44,19 @@ namespace ConvenientShop.API.Controllers
             );
         }
 
-        [HttpPut("{barcode}/exports")]
+        [HttpGet("{barcode}")]
+        public IActionResult GetOneProductDetail(string barcode, int accountId = -1)
+        {
+            if (!_arepo.AuthorizeUser(accountId, Permission.ViewProductDetail))
+                return Unauthorized();
+            var pd = _prepo.GetProductDetail(barcode);
+            if (pd is null)
+                return NotFound();
+            var result = Mapper.Map<ProductDetailDto>(pd);
+            return Ok(result);
+        }
+
+        [HttpPut("exports/{barcode}")]
         public IActionResult ExportFromRepo(string barcode, int quantity)
         {
             if (!_prepo.ProductDetailExists(barcode))

@@ -2,10 +2,8 @@ using System;
 
 namespace ConvenientShop.API.Models
 {
-    public class ExportDto
+    public class ExportForProductDetailDto
     {
-        public string BarCode { get; set; }
-        public string Name { get; set; }
         public int ExportedQuantity { get; set; }
         public DateTime ExportedDateTime { get; set; }
     }
