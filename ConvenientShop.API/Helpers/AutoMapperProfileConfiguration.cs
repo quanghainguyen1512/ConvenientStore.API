@@ -16,6 +16,8 @@ namespace ConvenientShop.API.Helpers
                     opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"))
                 .ForMember(dept => dept.Gender,
                     opt => opt.MapFrom(src => src.Gender == true ? "Nam" : "Nữ"))
+                .ForMember(dest => dest.Role,
+                    opt => opt.MapFrom(src => src.Role.Name))
                 .Include<Entities.Staff, Models.StaffDto>();
             CreateMap<Entities.Staff, Models.StaffDto>();
             CreateMap<Entities.Staff, Models.StaffLogInSessionInfo>()
@@ -107,6 +109,11 @@ namespace ConvenientShop.API.Helpers
 
             //Export
             CreateMap<Entities.Export, Models.ExportForProductDetailDto>();
+
+            //Role
+            CreateMap<Entities.Role, Models.RoleDto>()
+                .ForMember(dest => dest.Role,
+                    opt => opt.MapFrom(src => src.Name));
         }
     }
 }

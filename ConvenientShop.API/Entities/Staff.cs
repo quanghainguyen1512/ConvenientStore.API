@@ -22,5 +22,8 @@ namespace ConvenientShop.API.Entities
 
         [Write(false)]
         public ICollection<Bill> Bills { get; set; }
+
+        [Write(false)]
+        public Role Role { get; set; }
     }
 }

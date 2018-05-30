@@ -8,6 +8,7 @@ using ConvenientShop.API.Models;
 using ConvenientShop.API.Services.Interfaces;
 using Dapper;
 using Dapper.Contrib.Extensions;
+using Dapper.Mapper;
 using Microsoft.Extensions.Options;
 using MySql.Data.MySqlClient;
 using Z.Dapper.Plus;
@@ -70,8 +71,12 @@ namespace ConvenientShop.API.Services
             using(var conn = Connection)
             {
                 conn.Open();
-                var sql = "SELECT * FROM staff WHERE AccountId <> -1";
-                return conn.Query<Staff>(sql);
+                var sql = "SELECT s.StaffId, s.DateOfBirth, s.FirstName, s.LastName, s.PhoneNumber, s.Gender, s.ImageUrl, s.IdentityNumber, " +
+                    "r.RoleId, r.Name FROM staff AS s " +
+                    "LEFT JOIN account AS a ON s.AccountId = a.AccountId " +
+                    "INNER JOIN role AS r ON r.RoleId = a.RoleId " +
+                    "WHERE s.AccountId <> -1";
+                return conn.Query<Staff, Role>(sql, splitOn: "RoleId");
             }
         }
 
