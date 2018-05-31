@@ -148,7 +148,21 @@ namespace ConvenientShop.API.Services
             using(var conn = Connection)
             {
                 conn.Open();
-                return conn.GetAll<Product>();
+                var sql = "SELECT p.ProductId, p.Name, p.ImageUrl, p.Unit, " +
+                    "SUM(pd.QuantityOnStore) AS OnStore, " +
+                    "SUM(pd.QuantityInRepository) AS InRepo, " + 
+                    "s.SupplierId, s.SupplierName " +
+                    "FROM product AS p " +
+                    "INNER JOIN supplier AS s ON p.SupId = s.SupplierId " +
+                    "INNER JOIN order_detail AS od ON od.ProductId = p.ProductId " +
+                    "INNER JOIN shipment AS sh ON sh.OrderDetailId = od.OrderDetailId " +
+                    "INNER JOIN product_detail AS pd ON pd.BarCode = sh.BarCode " +
+                    "GROUP BY p.ProductId, p.Name, p.ImageUrl, p.Unit, " +
+                    "s.SupplierId, s.SupplierName";
+                return conn.Query<Product, Supplier>(
+                    sql,
+                    splitOn: "SupplierId"
+                );
             }
         }
 
